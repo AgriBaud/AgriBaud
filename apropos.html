@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>À propos - JardinExpress</title>
+
+<style>
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    overflow-x: hidden;
+    position: relative;
+    background: #e8f5e9;
+    min-height: 100vh;
+}
+
+/* En-tête */
+header {
+    text-align: center;
+    color: white;
+    font-size: 32px;
+    font-weight: bold;
+    text-shadow: 2px 2px 8px #000;
+    padding: 40px 20px;
+    background: #2e7d32;
+    position: relative;
+}
+
+.back-btn {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: #ffa726;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 42px;
+    height: 42px;
+    font-size: 22px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+/* Scroll horizontal de cartes */
+.horizontal-scroll {
+    display: flex;
+    gap: 20px;
+    overflow-x: auto;
+    padding: 30px 20px;
+    scroll-behavior: smooth;
+}
+
+.horizontal-scroll::-webkit-scrollbar { display: none; }
+
+.card {
+    flex-shrink: 0;
+    width: 300px;
+    border-radius: 18px;
+    padding: 25px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    color: #fff;
+    position: relative;
+    transition: transform 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-8px);
+}
+
+.card:nth-child(1) { background: #4caf50; }
+.card:nth-child(2) { background: #ff9800; }
+.card:nth-child(3) { background: #0288d1; }
+.card:nth-child(4) { background: #9c27b0; }
+
+h2 {
+    font-size: 22px;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+p, li {
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+ul { padding-left: 20px; }
+
+.return-btn {
+    display: block;
+    width: 220px;
+    margin: 20px auto 40px;
+    padding: 15px;
+    text-align: center;
+    background: #2e7d32;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 12px;
+    cursor: pointer;
+    text-decoration: none;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    transition: background 0.3s;
+}
+
+.return-btn:hover {
+    background: #1b5e20;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <a href="index.html" class="back-btn" title="Retour à l'accueil">←</a>
+  À propos de JardinExpress
+</header>
+
+<div class="horizontal-scroll">
+    <div class="card">
+        <h2><span>🌱</span> Présentation</h2>
+        <p><strong>JardinExpress</strong> est votre assistant complet pour la culture des <strong>plantes potagères tropicales</strong>.</p>
+        <p>Il fournit des itinéraires techniques précis et adaptés aux conditions climatiques du Bénin et de l'Afrique de l'Ouest.</p>
+    </div>
+    <div class="card">
+        <h2><span>🛠️</span> Fonctionnalités</h2>
+        <ul>
+            <li>Fiches complètes pour chaque plante : description, itinéraire, maladies & ravageurs.</li>
+            <li>Calendrier agricole intelligent avec adaptation aux saisons des pluies et saisons sèches.</li>
+            <li>Reconnaissance de plantes par IA grâce à l'API PlantNet.</li>
+            <li>Alertes phytosanitaires et conseils d'entretien.</li>
+        </ul>
+    </div>
+    <div class="card">
+        <h2><span>🎯</span> Objectif</h2>
+        <p>Fournir un guide simple et pratique pour les maraîchers et jardiniers passionnés, afin de maximiser les rendements et préserver la santé des sols et des cultures. 🌿🍅🥕</p>
+    </div>
+    <div class="card">
+        <h2><span>💡</span> Auteur & Contact</h2>
+        <p><b>Auteur :</b> Baudler-Fiacre GBENOU-FANOU</p>
+        <p><b>Email :</b> gbenoufanoubaudlerfiacre@gmail.com</p>
+        <p>© 2025 JardinExpress - Tous droits réservés.</p>
+    </div>
+</div>
+
+<a href="index.html" class="return-btn">🏡 Retour à l'accueil</a>
+
+</body>
+</html>

@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JardinExpress – AgriMarket Bio & Semences</title>
+
+<style>
+:root {
+  --primary: #2e7d32;
+  --bg: #f4f8f4;
+}
+
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: var(--bg);
+  margin: 0;
+  padding: 0;
+  color: #333;
+}
+
+header {
+  background: var(--primary);
+  color: white;
+  padding: 15px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+.back-btn {
+  background: #ffa726;
+  color: white;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  font-size: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.container {
+  max-width: 1100px;
+  margin: 20px auto;
+  padding: 0 15px;
+}
+
+.controls-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+  background: white;
+  padding: 15px;
+  border-radius: 14px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+}
+
+.btn-add {
+  background: var(--primary);
+  color: white;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-add:hover { background: #1b5e20; }
+
+.market-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.market-card {
+  background: white;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s;
+}
+
+.market-card:hover { transform: translateY(-5px); }
+
+.card-img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  background: #e0e0e0;
+}
+
+.card-body {
+  padding: 15px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-badge {
+  align-self: flex-start;
+  padding: 3px 8px;
+  background: #e8f5e9;
+  color: var(--primary);
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: bold;
+  margin-bottom: 6px;
+}
+
+.card-title {
+  font-size: 16px;
+  font-weight: bold;
+  margin: 0 0 6px 0;
+}
+
+.card-price {
+  font-size: 18px;
+  font-weight: bold;
+  color: #ff9800;
+  margin-bottom: 8px;
+}
+
+.card-location {
+  font-size: 12px;
+  color: #777;
+  margin-bottom: 12px;
+}
+
+.btn-whatsapp {
+  background: #25D366;
+  color: white;
+  text-align: center;
+  padding: 10px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 13px;
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+/* Modal Formulaire */
+.modal {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  display: none;
+}
+
+.modal-content {
+  background: white;
+  padding: 25px;
+  border-radius: 16px;
+  max-width: 450px;
+  width: 90%;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.modal-content h3 { margin-top: 0; color: var(--primary); }
+
+label { font-size: 13px; font-weight: bold; color: #555; display: block; margin-top: 10px; }
+input, select, textarea { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ccc; box-sizing: border-box; margin-top: 4px; }
+</style>
+</head>
+
+<body>
+
+<header>
+  <div style="font-size: 20px; font-weight: bold;">
+    🛒 AgriMarket – Semences & Produit Bio
+  </div>
+  <a href="index.html" class="back-btn" title="Retour à l'accueil">←</a>
+</header>
+
+<div class="container">
+  <div class="controls-bar">
+    <div style="display:flex; gap:10px; flex:1; max-width:400px;">
+      <input type="text" id="marketSearch" placeholder="Rechercher une semence, légume..." onkeyup="renderListings()" style="margin:0;">
+    </div>
+
+    <button class="btn-add" onclick="openModal()">➕ Publier une Annonce</button>
+  </div>
+
+  <div class="market-grid" id="marketGrid"></div>
+</div>
+
+<!-- Modal Ajouter une Annonce -->
+<div class="modal" id="addModal">
+  <div class="modal-content">
+    <h3>📢 Publier une Annonce</h3>
+    <label>Titre de l'annonce :</label>
+    <input type="text" id="itemTitle" placeholder="Ex: Semences de Piment Africain Bio">
+
+    <label>Catégorie :</label>
+    <select id="itemCategory">
+      <option value="Semences">🌱 Semences Paysannes</option>
+      <option value="Légumes">🍅 Recoltés / Légumes Bio</option>
+      <option value="Compost">🪵 Compost / Terreau</option>
+      <option value="Outils">🛠️ Matériel / Outils</option>
+    </select>
+
+    <label>Prix (FCFA) ou Gratuit / Échange :</label>
+    <input type="text" id="itemPrice" placeholder="Ex: 1000 FCFA ou Échange">
+
+    <label>Ville / Emplacement :</label>
+    <input type="text" id="itemLocation" placeholder="Ex: Cotonou / Abomey-Calavi">
+
+    <label>Numéro WhatsApp (avec indicatif) :</label>
+    <input type="text" id="itemPhone" placeholder="Ex: 22997000000">
+
+    <div style="display:flex; gap:10px; margin-top:15px;">
+      <button class="btn-add" style="flex:1;" onclick="submitListing()">Publier</button>
+      <button class="btn-add" style="background:#888; flex:1;" onclick="closeModal()">Annuler</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ANNONCES PAR DÉFAUT EN DÉMO */
+let listings = [
+  {
+    id: 1,
+    title: "Graines de Piment Africain de Pays",
+    category: "Semences",
+    price: "1 500 FCFA",
+    location: "Cotonou, Vedoko",
+    phone: "22997000000",
+    image: "piment.jpg"
+  },
+  {
+    id: 2,
+    title: "Compost Mûr 100% Organique (Sac 25kg)",
+    category: "Compost",
+    price: "3 000 FCFA",
+    location: "Porto-Novo",
+    phone: "22996000000",
+    image: "racines.jpg"
+  },
+  {
+    id: 3,
+    title: "Tomates Fraîches Bio du Jardin",
+    category: "Légumes",
+    price: "2 000 FCFA / panier",
+    location: "Abomey-Calavi",
+    phone: "22995000000",
+    image: "tomate.jpg"
+  }
+];
+
+document.addEventListener("DOMContentLoaded", () => {
+  const saved = localStorage.getItem("jardinexpress_agrimarket");
+  if (saved) listings = JSON.parse(saved);
+  renderListings();
+});
+
+function renderListings() {
+  const grid = document.getElementById("marketGrid");
+  const query = (document.getElementById("marketSearch").value || "").toLowerCase();
+  grid.innerHTML = "";
+
+  const filtered = listings.filter(l => l.title.toLowerCase().includes(query) || l.category.toLowerCase().includes(query));
+
+  if (filtered.length === 0) {
+    grid.innerHTML = `<p style="grid-column:1/-1; text-align:center; color:#777;">Aucune annonce trouvée.</p>`;
+    return;
+  }
+
+  filtered.forEach(item => {
+    const card = document.createElement("div");
+    card.className = "market-card";
+    card.innerHTML = `
+      <img src="${item.image || 'logo-jardin.jpg'}" class="card-img" alt="${item.title}">
+      <div class="card-body">
+        <span class="card-badge">${item.category}</span>
+        <h4 class="card-title">${item.title}</h4>
+        <div class="card-price">${item.price}</div>
+        <div class="card-location">📍 ${item.location}</div>
+        <a href="https://api.whatsapp.com/send?phone=${item.phone}&text=Bonjour,%20je%20suis%20intéressé%20par%20votre%20annonce%20JardinExpress:%20${encodeURIComponent(item.title)}" target="_blank" class="btn-whatsapp">
+          💬 Contacter sur WhatsApp
+        </a>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+function openModal() { document.getElementById("addModal").style.display = "flex"; }
+function closeModal() { document.getElementById("addModal").style.display = "none"; }
+
+function submitListing() {
+  const title = document.getElementById("itemTitle").value.trim();
+  const category = document.getElementById("itemCategory").value;
+  const price = document.getElementById("itemPrice").value.trim();
+  const location = document.getElementById("itemLocation").value.trim();
+  const phone = document.getElementById("itemPhone").value.trim();
+
+  if (!title || !price || !phone) return alert("Veuillez remplir le titre, le prix et le numéro WhatsApp.");
+
+  const newListing = {
+    id: Date.now(),
+    title, category, price, location: location || "Bénin", phone, image: "logo-jardin.jpg"
+  };
+
+  listings.unshift(newListing);
+  localStorage.setItem("jardinexpress_agrimarket", JSON.stringify(listings));
+  closeModal();
+  renderListings();
+  alert("🎉 Annonce publiée avec succès !");
+}
+</script>
+
+</body>
+</html>

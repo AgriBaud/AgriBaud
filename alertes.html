@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JardinExpress – Alertes & Conseils Agricoles</title>
+
+<style>
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: #f4f8f4;
+  margin: 0;
+  padding: 20px;
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+header {
+  max-width: 800px;
+  margin: 0 auto 20px auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+h1 {
+  color: #2e7d32;
+  font-size: 24px;
+  margin: 0;
+}
+
+.back-btn {
+  background: #ffa726;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.main-container {
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.alert-card {
+  background: white;
+  padding: 20px;
+  border-radius: 14px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  border-left: 6px solid #4caf50;
+}
+
+.alert-card.warning {
+  border-left-color: #ff9800;
+}
+
+.alert-card.danger {
+  border-left-color: #e53935;
+}
+
+.alert-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: bold;
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.alert-header.danger { color: #e53935; }
+.alert-header.warning { color: #f57c00; }
+.alert-header.success { color: #2e7d32; }
+
+p {
+  line-height: 1.5;
+  color: #444;
+  margin: 6px 0;
+}
+
+ul {
+  padding-left: 20px;
+  margin: 8px 0;
+}
+
+li {
+  margin-bottom: 6px;
+  color: #333;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>💡 Alertes & Conseils Agricoles</h1>
+  <a href="index.html" class="back-btn" title="Retour à l'accueil">←</a>
+</header>
+
+<div class="main-container">
+
+  <div class="alert-card danger">
+    <div class="alert-header danger">
+      <span>⚠️ Alerte Phytosanitaire : Chenilles & Tuta Absoluta</span>
+    </div>
+    <p>Période critique observée sur les cultures de <b>Tomates</b> et de <b>Piments</b>.</p>
+    <ul>
+      <li><b>Symptômes :</b> Perforations des feuilles, galeries sous l'épiderme, piqûres sur les fruits.</li>
+      <li><b>Actions préventives :</b> Installer des pièges à phéromones ou à eau, pulvériser une solution d'extrait d'huile de Neem (10 ml/L d'eau avec savon liquide) ou Bacillus thuringiensis.</li>
+    </ul>
+  </div>
+
+  <div class="alert-card warning">
+    <div class="alert-header warning">
+      <span>🌧️ Conseil Saison des Pluies (Bénin)</span>
+    </div>
+    <p>Risque élevé d'attaques fongiques (Mildiou, Alternariose, Oïdium) sur la Tomate, la Carotte et le Concombre.</p>
+    <ul>
+      <li>Éviter tout arrosage foliaire (arroser uniquement au pied).</li>
+      <li>Espacer les plants pour garantir une bonne aération de la canopée.</li>
+      <li>Appliquer un traitement préventif à la bouillie bordelaise après les fortes pluies.</li>
+    </ul>
+  </div>
+
+  <div class="alert-card warning">
+    <div class="alert-header warning">
+      <span>☀️ Conseil Saison Sèche & Harmattan</span>
+    </div>
+    <p>Évaporation intense et stress hydrique pour les cultures de feuilles (Laitue, Chou, Épinard).</p>
+    <ul>
+      <li>Instaurer un <b>paillage paillé (5 cm)</b> au pied des plants pour conserver l'humidité du sol.</li>
+      <li>Arroser tôt le matin (avant 8h) ou en fin de journée (après 17h30).</li>
+      <li>Prévoir un ombrage léger pour les jeunes plantules en pépinière.</li>
+    </ul>
+  </div>
+
+  <div class="alert-card">
+    <div class="alert-header success">
+      <span>🌱 Bonne Pratique : Rotation des Cultures</span>
+    </div>
+    <p>Pour éviter l'épuisement du sol et couper le cycle des parasites :</p>
+    <ul>
+      <li>Ne jamais replanter de Tomate ou Piment sur la même parcelle pendant 3 ans (Solanacées).</li>
+      <li>Alterner avec une légumineuse (Haricot, Niébé) qui enrichit le sol en azote naturel.</li>
+    </ul>
+  </div>
+
+</div>
+
+</body>
+</html>

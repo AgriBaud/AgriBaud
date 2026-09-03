@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JardinExpress - Splash Feuilles Tombantes</title>
+<style>
+body {
+    margin:0;
+    font-family: Arial, sans-serif;
+    overflow:hidden;
+    background: linear-gradient(135deg, #e0f7fa, #e8f5e9);
+}
+
+#splash {
+    position: fixed;
+    top:0; left:0;
+    width:100%; height:100%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    overflow:hidden;
+    z-index:1000;
+}
+
+#splash-content {
+    position: relative;
+    text-align:center;
+    z-index:2;
+}
+
+#splash-content h1 {
+    font-family: 'Arial Black', Arial, sans-serif;
+    font-size:3em;
+    color:#2e7d32;
+    margin-bottom:10px; /* Texte plus proche du logo */
+    text-shadow: 2px 2px 6px rgba(0,0,0,0.2);
+}
+
+#logo {
+    width:190px;
+    height:190px;
+    margin-bottom:40px;
+    animation: pulse 2s ease-in-out infinite;
+    box-shadow: 0 0 30px rgba(76,175,80,0.8);
+    border-radius:50%;
+}
+
+@keyframes pulse {
+    0%,100%{transform:scale(1);}
+    50%{transform:scale(1.15);}
+}
+
+#loader-container {
+    width:300px;
+    height:30px;
+    background:#c8e6c9;
+    border-radius:9px;
+    overflow:hidden;
+    margin:0 auto;
+    box-shadow: inset 0 0 8px rgba(0,0,0,0.1);
+    position: relative;
+}
+
+#loader {
+    width:0%;
+    height:100%;
+    background: linear-gradient(270deg,#4CAF50,#8BC34A,#AED581,#C5E1A5,#DCEDC8);
+    border-radius:9px;
+    animation: load 5s ease forwards, gradientMove 5s linear forwards;
+    background-size: 400% 100%;
+    position: relative;
+    overflow:hidden;
+}
+
+#loader::after {
+    content:"";
+    position:absolute;
+    top:0; left:0;
+    width:50px;
+    height:100%;
+    background: rgba(255,255,255,0.5);
+    transform: skewX(-20deg);
+    animation: shine 2s linear infinite;
+}
+
+@keyframes shine {
+    0% { left:-50px; }
+    100% { left:400px; }
+}
+
+@keyframes load {
+    0%{width:0%;}
+    100%{width:100%;}
+}
+
+@keyframes gradientMove {
+    0%{background-position:0% 0%;}
+    100%{background-position:100% 0%;}
+}
+
+#particles {
+    position:absolute;
+    top:0; left:0;
+    width:100%;
+    height:100%;
+    z-index:1;
+    filter: blur(0.5px);
+}
+</style>
+</head>
+<body>
+
+<div id="splash">
+  <canvas id="particles"></canvas>
+  <div id="splash-content">
+    <h1>JardinExpress</h1>
+    <img src="logo.png" alt="Logo JardinExpress" id="logo">
+    <div id="loader-container">
+      <div id="loader"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const canvas = document.getElementById('particles');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+const centerX = canvas.width/2;
+const centerY = canvas.height/2;
+const loader = document.getElementById('loader');
+const loaderRect = {x: (window.innerWidth-400)/2, y: centerY+90, width:400, height:18};
+
+// ======= Feuilles tombantes =======
+class Leaf {
+    constructor(){
+        this.x = Math.random()*canvas.width;
+        this.y = -10 - Math.random()*canvas.height;
+        this.speedY = 1.5 + Math.random()*2; // vitesse plus élevée
+        this.size = 6 + Math.random()*4;
+        this.color = Math.random() < 0.6 ? 'rgba(76,175,80,0.8)' : 'rgba(139,195,74,0.8)';
+        this.blur = 0.3 + Math.random()*0.7;
+        this.offsetX = Math.random()*2-1; // légère oscillation horizontale
+    }
+
+    update(){
+        this.y += this.speedY;
+        this.x += this.offsetX;
+
+        // Repositionner si sortie écran
+        if(this.y > canvas.height + this.size) this.y = -this.size;
+
+        // Vibration de la barre si la feuille passe dessus
+        if(this.y + this.size > loaderRect.y && this.y < loaderRect.y + loaderRect.height &&
+           this.x > loaderRect.x && this.x < loaderRect.x + loaderRect.width){
+               loader.style.transform = `translateY(${Math.random()*4-2}px)`;
+        }
+    }
+
+    draw(){
+        ctx.save();
+        ctx.translate(this.x,this.y);
+        ctx.shadowBlur = this.blur*5;
+        ctx.shadowColor = this.color;
+        ctx.beginPath();
+        ctx.moveTo(0,-this.size);
+        ctx.bezierCurveTo(this.size/2,-this.size/2,this.size/2,this.size/2,0,this.size);
+        ctx.bezierCurveTo(-this.size/2,this.size/2,-this.size/2,-this.size/2,0,-this.size);
+        ctx.fillStyle=this.color;
+        ctx.fill();
+        ctx.restore();
+    }
+}
+
+// ======= Particules lumineuses =======
+class Particle {
+    constructor(){
+        this.x = Math.random()*canvas.width;
+        this.y = Math.random()*canvas.height;
+        this.size = Math.random()*2 + 1;
+        this.speedX = (Math.random()-0.5)*0.3;
+        this.speedY = (Math.random()-0.5)*0.3;
+        this.color = 'rgba(255,255,255,0.4)';
+    }
+
+    update(){
+        this.x += this.speedX;
+        this.y += this.speedY;
+        if(this.x<0)this.x=canvas.width;
+        if(this.x>canvas.width)this.x=0;
+        if(this.y<0)this.y=canvas.height;
+        if(this.y>canvas.height)this.y=0;
+    }
+
+    draw(){
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(this.x,this.y,this.size,0,Math.PI*2);
+        ctx.fillStyle = this.color;
+        ctx.fill();
+        ctx.restore();
+    }
+}
+
+// ======= Création =======
+const leaves=[];
+for(let i=0;i<80;i++) leaves.push(new Leaf()); // beaucoup de feuilles tombantes
+
+const particles=[];
+for(let i=0;i<100;i++) particles.push(new Particle());
+
+// ======= Animation =======
+function animate(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    // Fond dynamique subtil
+    const gradient = ctx.createLinearGradient(0,0,canvas.width,canvas.height);
+    gradient.addColorStop(0,'rgba(224,247,250,0.2)');
+    gradient.addColorStop(1,'rgba(232,245,233,0.2)');
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+
+    // Particules
+    particles.forEach(p=>{p.update();p.draw();});
+    // Feuilles tombantes
+    leaves.forEach(l=>{l.update(); l.draw();});
+
+    requestAnimationFrame(animate);
+}
+animate();
+
+// ======= Redirection =======
+setTimeout(()=>{
+    const splash = document.getElementById('splash');
+    splash.style.transition="opacity 0.5s";
+    splash.style.opacity=0;
+    setTimeout(()=>{
+        splash.style.display='none';
+        window.location.href = "index.html";
+    },500);
+},5000);
+
+// ======= Redimensionnement =======
+window.addEventListener('resize', ()=>{
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    loaderRect.x = (window.innerWidth-400)/2;
+    loaderRect.y = centerY+90;
+});
+</script>
+
+</body>
+</html>

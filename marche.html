@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prix du Marché</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { theme: { extend: { colors: { brand: '#16a34a', bgLight: '#f0fdf4' } } } }
+  </script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style> body { font-family: 'Segoe UI', system-ui, sans-serif; } </style>
+</head>
+<body class="bg-bgLight text-gray-800 flex flex-col min-h-screen">
+
+  <header class="bg-brand text-white shadow-md sticky top-0 z-50">
+    <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+      <div class="flex items-center gap-3">
+        <a href="index.html" class="text-white text-xl hover:text-green-200"><i class="fas fa-arrow-left"></i></a>
+        <h1 class="text-xl font-bold leading-tight">Prix du Marché</h1>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-grow container mx-auto px-4 py-6 max-w-4xl">
+    
+    <div class="bg-white rounded-2xl shadow-sm border border-green-100 p-6 mb-6">
+        <h2 class="text-2xl font-bold text-gray-800 mb-2">Tendance des Marchés Locaux</h2>
+        <p class="text-gray-600">Prix de gros indicatifs relevés sur les principaux marchés du Bénin pour aide à la décision. (Données V1)</p>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-sm whitespace-nowrap">
+                <thead class="bg-green-50 text-green-900 border-b border-green-200">
+                    <tr>
+                        <th class="py-3 px-4 font-bold">Produit</th>
+                        <th class="py-3 px-4 font-bold">Prix indicatif (KG)</th>
+                        <th class="py-3 px-4 font-bold">Marché de réf.</th>
+                        <th class="py-3 px-4 font-bold text-center">Tendance</th>
+                        <th class="py-3 px-4 font-bold text-gray-500">Mise à jour</th>
+                    </tr>
+                </thead>
+                <tbody id="marketTable" class="divide-y divide-gray-100">
+                    <!-- Injected via JS -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+  </main>
+
+  <script src="db.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const marketTable = document.getElementById('marketTable');
+
+        if(typeof DB !== 'undefined' && DB.marche) {
+            DB.marche.forEach(item => {
+                let trendBadge = "";
+                if(item.tendance === "hausse") {
+                    trendBadge = `<span class="bg-red-100 text-red-800 px-2 py-1 rounded-full text-xs font-bold"><i class="fas fa-arrow-up"></i> Hausse</span>`;
+                } else if(item.tendance === "baisse") {
+                    trendBadge = `<span class="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-bold"><i class="fas fa-arrow-down"></i> Baisse</span>`;
+                } else {
+                    trendBadge = `<span class="bg-gray-100 text-gray-800 px-2 py-1 rounded-full text-xs font-bold"><i class="fas fa-minus"></i> Stable</span>`;
+                }
+
+                marketTable.innerHTML += `
+                    <tr class="hover:bg-gray-50 transition">
+                        <td class="py-3 px-4 font-semibold text-gray-800">${item.produit}</td>
+                        <td class="py-3 px-4 font-bold text-brand">${item.prix_kg} FCFA</td>
+                        <td class="py-3 px-4 text-gray-600"><i class="fas fa-map-marker-alt text-gray-400"></i> ${item.marche}</td>
+                        <td class="py-3 px-4 text-center">${trendBadge}</td>
+                        <td class="py-3 px-4 text-gray-500 text-xs">${item.date}</td>
+                    </tr>
+                `;
+            });
+        }
+    });
+  </script>
+</body>
+</html>

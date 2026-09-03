@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guide Culture - Voandzou</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { theme: { extend: { colors: { brand: '#16a34a', bgLight: '#f0fdf4' } } } }
+  </script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    body { font-family: 'Segoe UI', system-ui, sans-serif; }
+    .timeline-container { position: relative; padding-left: 30px; margin-top: 20px; }
+    .timeline-container::before { content: ''; position: absolute; left: 11px; top: 0; height: 100%; width: 4px; background: #bbf7d0; border-radius: 4px; }
+    .timeline-item { position: relative; margin-bottom: 25px; }
+    .timeline-dot { position: absolute; left: -30px; top: 4px; width: 24px; height: 24px; background: #16a34a; border: 4px solid #f0fdf4; border-radius: 50%; z-index: 10; }
+  
+    /* Styles pour l'ancien contenu */
+    .old-content .big-card { background: white; border-radius: 0.75rem; padding: 1.25rem; margin-bottom: 1.5rem; box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05); border: 1px solid #dcfce7; }
+    .old-content h2.card-title { color: #166534; font-size: 1.25rem; font-weight: 700; margin-bottom: 1rem; border-bottom: 2px solid #bbf7d0; padding-bottom: 0.5rem; }
+    .old-content h3 { color: #15803d; font-weight: 600; margin-top: 1rem; margin-bottom: 0.5rem; }
+    .old-content p { color: #4b5563; font-size: 0.875rem; margin-bottom: 0.5rem; }
+    .old-content ul { list-style-type: disc; margin-left: 1.25rem; color: #4b5563; font-size: 0.875rem; margin-bottom: 1rem; }
+    .old-content li { margin-bottom: 0.25rem; }
+  </style>
+</head>
+<body class="bg-bgLight text-gray-800 flex flex-col min-h-screen">
+
+  <header class="bg-brand text-white shadow-md sticky top-0 z-50">
+    <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+      <div class="flex items-center gap-3">
+        <a href="index.html" class="text-white text-xl hover:text-green-200"><i class="fas fa-arrow-left"></i> Retour Accueil</a>
+        <h1 class="text-xl font-bold leading-tight">Guide : Voandzou</h1>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-grow container mx-auto px-4 py-6 max-w-3xl">
+    <div class="w-full h-48 rounded-2xl bg-cover bg-center mb-4 shadow-md relative overflow-hidden" style="background-image: url('voandzou.jpg');">
+        <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end">
+            <h2 class="text-3xl font-bold text-white p-5">Voandzou</h2>
+        </div>
+    </div>
+
+    <div class="flex flex-col sm:flex-row gap-3 mb-6">
+        <button id="btnShare" class="flex-1 bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold py-3 px-4 rounded-xl shadow transition flex justify-center items-center gap-2">
+            <i class="fab fa-whatsapp text-xl"></i> Partager sur WhatsApp
+        </button>
+        <button id="btnPDF" class="flex-1 bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 px-4 rounded-xl shadow transition flex justify-center items-center gap-2">
+            <i class="fas fa-download text-xl"></i> Télécharger en PDF
+        </button>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-sm border border-green-100 p-5 mb-6">
+        <h3 class="text-lg font-bold text-brand mb-3 border-b pb-2"><i class="fas fa-info-circle"></i> Fiche d'identité</h3>
+        <div class="grid grid-cols-2 gap-4 text-sm">
+            <div><span class="text-gray-500 block">Saison idéale</span> <span class="font-semibold text-gray-800">Toute saison (à confirmer)</span></div>
+            <div><span class="text-gray-500 block">Cycle moyen</span> <span class="font-semibold text-gray-800">0 jours</span></div>
+            <div><span class="text-gray-500 block">Rendement estimé</span> <span class="font-semibold text-gray-800">N/A</span></div>
+            <div><span class="text-gray-500 block">Zone adaptée</span> <span class="font-semibold text-gray-800">Toutes zones</span></div>
+        </div>
+    </div>
+
+    <div class="bg-green-50 rounded-xl shadow-sm border border-green-200 p-5 mb-6">
+        <h3 class="text-lg font-bold text-green-900 mb-3"><i class="fas fa-wallet"></i> Budget estimatif (par Hectare)</h3>
+        <ul class="space-y-2 text-sm">
+            <li class="flex justify-between border-b border-green-200 pb-1">
+                <span class="text-gray-700">Intrants :</span> <span class="font-bold text-red-600">N/A</span>
+            </li>
+            <li class="flex justify-between border-b border-green-200 pb-1">
+                <span class="text-gray-700">Main d'œuvre :</span> <span class="font-bold text-red-600">N/A</span>
+            </li>
+            <li class="flex justify-between pt-1">
+                <span class="text-green-900 font-bold">Revenu estimé :</span> <span class="font-bold text-green-700">N/A</span>
+            </li>
+        </ul>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-sm border border-red-100 p-5 mb-6">
+        <h3 class="text-lg font-bold text-red-700 mb-3"><i class="fas fa-exclamation-triangle"></i> Principaux Ennemis</h3>
+        <div><span class="text-gray-500 text-sm">Données en cours de collecte</span></div>
+    </div>
+
+    <div class="mb-10">
+        <h3 class="text-xl font-bold text-brand mb-4 flex items-center gap-2"><i class="fas fa-route"></i> Itinéraire Technique A à Z</h3>
+        <div class="timeline-container">
+            
+          <div class="timeline-item">
+              <div class="timeline-dot"></div>
+              <div class="bg-white p-4 rounded-xl shadow-sm border border-green-50">
+                  <span class="text-xs font-bold text-brand bg-green-50 px-2 py-1 rounded inline-block mb-2">-</span>
+                  <h4 class="font-bold text-gray-800 text-lg mb-1">Mise à jour en cours</h4>
+                  <p class="text-gray-600 text-sm">Données en cours de collecte.</p>
+              </div>
+          </div>
+       
+        </div>
+    </div>
+    
+    <div class="text-center pb-8">
+        <a href="carnet.html?culture=voandzou" class="bg-brand text-white font-bold py-3 px-8 rounded-full shadow-lg hover:bg-green-700 transition inline-block">
+            <i class="fas fa-plus-circle"></i> Ajouter à mon Carnet
+        </a>
+    </div>
+  
+    <div class="old-content mt-8">
+        <h3 class="text-2xl font-bold text-green-800 mb-4 border-b-2 border-green-300 pb-2">Détails et Astuces (Archive)</h3>
+        
+        <header style="display:none;">Culture de Voandzou</header>
+        
+        <div class="horizontal-scroll">
+        
+        <!----------------------------- 1. DESCRIPTION ------------------------------>
+        <div class="big-card">
+            <h2 class="card-title">📘 Description Générale</h2>
+            <div class="card-content">
+                <ul>
+                    <li>🌱 Plante cultivée pour ses propriétés nutritives et économiques.</li>
+                    <li>💰 Culture très rentable et prisée sur les marchés locaux et urbains.</li>
+                    <li>🌡️ Nécessite une exposition ensoleillée et un climat adapté.</li>
+                    <li>🌍 Adaptable à la majorité des sols profonds et bien drainés.</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!----------------------------- 2. ITINÉRAIRE ------------------------------>
+        <div class="big-card">
+            <h2 class="card-title">🌱 Itinéraire Technique</h2>
+            <div class="card-content">
+                <ul>
+                    <li><strong>1. Préparation du sol :</strong> Labour profond, ameublissement et apport généreux de fumure organique (compost ou fumier).</li>
+                    <li><strong>2. Mise en place :</strong> Semis direct ou repiquage selon les variétés. Respecter les densités de plantation.</li>
+                    <li><strong>3. Entretien :</strong> Sarclages réguliers, binages et gestion de l'enherbement.</li>
+                    <li><strong>4. Irrigation :</strong> Apport d'eau régulier, particulièrement en phase de croissance active et de floraison/fructification.</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!----------------------------- 3. CYCLE ------------------------------>
+        <div class="big-card">
+            <h2 class="card-title">⏳ Cycle & Durée</h2>
+            <div class="card-content">
+                <ul>
+                    <li><strong>Durée du cycle :</strong> Variable selon la variété (généralement entre 60 et 120 jours).</li>
+                    <li><strong>Maturité :</strong> Récolter à pleine maturité commerciale pour une meilleure conservation et valorisation.</li>
+                    <li><strong>Saison :</strong> Peut se cultiver en saison des pluies ou en contre-saison avec un système d'irrigation.</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!----------------------------- 4. MALADIES ------------------------------>
+        <div class="big-card">
+            <h2 class="card-title">⚠️ Maladies & Ravageurs</h2>
+            <div class="card-content">
+                <p><strong>Principaux ennemis de la culture :</strong></p>
+                <ul>
+                    <li>🐛 <strong>Insectes piqueurs-suceurs :</strong> Pucerons, mouches blanches, altises.</li>
+                    <li>🍄 <strong>Maladies fongiques :</strong> Fonte des semis, mildiou, oïdium (en cas de forte humidité).</li>
+                    <li>🪱 <strong>Nématodes :</strong> Affectent les racines si la rotation n'est pas respectée.</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!----------------------------- 5. PRATIQUES ------------------------------>
+        <div class="big-card">
+            <h2 class="card-title">💡 Bonnes Pratiques</h2>
+            <div class="card-content">
+                <ul>
+                    <li>✅ <strong>Rotation des cultures :</strong> Ne jamais replanter Voandzou au même endroit deux années de suite pour casser le cycle des ravageurs.</li>
+                    <li>✅ <strong>Associations bénéfiques :</strong> Planter des oignons, de l'ail ou du basilic autour pour repousser naturellement les insectes.</li>
+                    <li>✅ <strong>Lutte biologique :</strong> Utiliser des extraits de neem, de la cendre de bois ou du savon noir en prévention.</li>
+                </ul>
+            </div>
+        </div>
+        
+        </div>
+    </div>
+
+  </main>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('btnShare').addEventListener('click', () => {
+          let msg = "🌱 Guide Voandzou A à Z\nSaison: Toute saison (à confirmer) | Durée: 0 jours\nÉtape 1: Mise à jour en cours\nVoir le guide complet: " + window.location.href;
+          window.open("https://wa.me/?text=" + encodeURIComponent(msg), '_blank');
+      });
+
+      document.getElementById('btnPDF').addEventListener('click', () => {
+          const { jsPDF } = window.jspdf;
+          const doc = new jsPDF();
+          doc.setFontSize(22); doc.setTextColor(22, 163, 74);
+          doc.text("Guide Culture : Voandzou", 20, 20);
+          doc.setFontSize(12); doc.setTextColor(50, 50, 50);
+          doc.text("Saison : Toute saison (à confirmer) | Duree : 0 jours", 20, 30);
+          doc.text("Mise a jour en cours.", 20, 40);
+          doc.save("Guide-Voandzou.pdf");
+      });
+    });
+  </script>
+</body>
+</html>

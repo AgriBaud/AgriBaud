@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JardinExpress – Planificateur 2D de Parcelle & Compagnonnage</title>
+
+<style>
+:root {
+  --primary: #2e7d32;
+  --bg: #f4f8f4;
+  --symbiosis: #4caf50;
+  --antagonism: #e53935;
+}
+
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: var(--bg);
+  margin: 0;
+  padding: 0;
+  color: #333;
+}
+
+header {
+  background: var(--primary);
+  color: white;
+  padding: 15px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+.back-btn {
+  background: #ffa726;
+  color: white;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  font-size: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.layout {
+  max-width: 1200px;
+  margin: 20px auto;
+  padding: 0 15px;
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 20px;
+}
+
+@media (max-width: 850px) {
+  .layout { grid-template-columns: 1fr; }
+}
+
+.card-panel {
+  background: white;
+  padding: 18px;
+  border-radius: 14px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+}
+
+.card-panel h3 {
+  margin-top: 0;
+  color: var(--primary);
+  border-bottom: 2px solid #e8f5e9;
+  padding-bottom: 8px;
+}
+
+/* Palette de plantes à glisser */
+.plant-palette {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  max-height: 420px;
+  overflow-y: auto;
+  padding: 5px;
+}
+
+.plant-item {
+  background: #f0f7f0;
+  border: 2px solid #a5d6a7;
+  border-radius: 10px;
+  padding: 10px 5px;
+  text-align: center;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 13px;
+  user-select: none;
+  transition: transform 0.2s, background 0.2s;
+}
+
+.plant-item:hover, .plant-item.selected {
+  background: var(--primary);
+  color: white;
+  transform: scale(1.04);
+}
+
+/* Grille du jardin */
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+  background: #795548;
+  padding: 12px;
+  border-radius: 14px;
+  box-shadow: inset 0 0 10px rgba(0,0,0,0.3);
+}
+
+.grid-cell {
+  aspect-ratio: 1;
+  background: #8d6e63;
+  border: 2px dashed #bcaaa4;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.3s;
+  color: white;
+  text-align: center;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 4px;
+  box-sizing: border-box;
+}
+
+.grid-cell:hover {
+  background: #a1887f;
+  border-color: white;
+}
+
+.grid-cell.symbiotic {
+  border: 3px solid var(--symbiosis) !important;
+  box-shadow: 0 0 10px rgba(76,175,80,0.8);
+}
+
+.grid-cell.antagonistic {
+  border: 3px solid var(--antagonism) !important;
+  box-shadow: 0 0 10px rgba(229,57,53,0.8);
+}
+
+.cell-icon { font-size: 24px; margin-bottom: 2px; }
+.cell-badge {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  font-size: 10px;
+  padding: 2px 4px;
+  border-radius: 50%;
+  color: white;
+}
+
+/* Panneau de conseils compagnonnage */
+.advice-box {
+  margin-top: 15px;
+  padding: 12px;
+  border-radius: 10px;
+  background: #e8f5e9;
+  border-left: 4px solid var(--primary);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+button.btn-action {
+  width: 100%;
+  padding: 12px;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+button.btn-action:hover { background: #1b5e20; }
+</style>
+</head>
+
+<body>
+
+<header>
+  <div style="font-size: 20px; font-weight: bold;">
+    📐 Planificateur 2D de Parcelle & Compagnonnage
+  </div>
+  <a href="index.html" class="back-btn" title="Retour à l'accueil">←</a>
+</header>
+
+<div class="layout">
+  <!-- Colonne Sélection & Légende -->
+  <div class="card-panel">
+    <h3>🌱 Palette de Plantes</h3>
+    <p style="font-size: 12px; color: #666;">Sélectionnez une plante puis cliquez sur un carré de votre parcelle pour la planter.</p>
+    
+    <div class="plant-palette" id="plantPalette"></div>
+
+    <div class="advice-box" id="companionAdvice">
+      <b>💡 Conseil Compagnonnage :</b><br>
+      Cliquez sur une plante pour voir ses meilleures associations (symbiose) et les incompatibilités à éviter.
+    </div>
+
+    <button class="btn-action" onclick="saveGardenLayout()">💾 Sauvegarder Ma Parcelle</button>
+    <button class="btn-action" style="background:#e53935;" onclick="clearGardenLayout()">🗑 Effacer la Parcelle</button>
+  </div>
+
+  <!-- Colonne Grille du Jardin -->
+  <div class="card-panel">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+      <h3 style="margin:0;">🟫 Ma Parcelle (Grille 5x5 Mètres)</h3>
+      <span style="font-size:12px; color:#666;">🟢 Vert = Symbiose | 🔴 Rouge = Incompatible</span>
+    </div>
+
+    <div class="grid-container" id="gardenGrid"></div>
+  </div>
+</div>
+
+<script>
+/* REGLES DE COMPAGNONNAGE & SYMBIOSE AGRONOMIQUE */
+const COMPANION_RULES = {
+  Tomate: { icon: "🍅", friends: ["Basilic", "Carotte", "Oignon", "Laitue"], enemies: ["Pomme_de_terre", "Chou"] },
+  Basilic: { icon: "🌿", friends: ["Tomate", "Poivron", "Piment"], enemies: [] },
+  Carotte: { icon: "🥕", friends: ["Oignon", "Poireau", "Laitue", "Pois"], enemies: [] },
+  Oignon: { icon: "🧅", friends: ["Carotte", "Tomate", "Laitue"], enemies: ["Haricot", "Pois"] },
+  Haricot: { icon: "🫘", friends: ["Mais", "Concombre", "Aubergine"], enemies: ["Oignon", "Ail"] },
+  Mais: { icon: "🌽", friends: ["Haricot", "Courge", "Concombre"], enemies: [] },
+  Piment: { icon: "🌶️", friends: ["Basilic", "Oignon", "Carotte"], enemies: [] },
+  Poivron: { icon: "🫑", friends: ["Basilic", "Oignon"], enemies: [] },
+  Chou: { icon: "🥦", friends: ["Betterave", "Laitue", "Concombre"], enemies: ["Tomate", "Fraise"] },
+  Laitue: { icon: "🥬", friends: ["Carotte", "Oignon", "Chou", "Tomate"], enemies: [] },
+  Concombre: { icon: "🥒", friends: ["Haricot", "Chou", "Mais"], enemies: ["Pomme_de_terre"] },
+  Aubergine: { icon: "🍆", friends: ["Haricot", "Basilic"], enemies: [] },
+  Pomme_de_terre: { icon: "🥔", friends: ["Haricot", "Mais"], enemies: ["Tomate", "Concombre"] },
+  Gombo: { icon: "🌱", friends: ["Piment", "Aubergine"], enemies: [] }
+};
+
+let selectedPlant = "Tomate";
+let gridData = Array(25).fill(null);
+
+document.addEventListener("DOMContentLoaded", () => {
+  renderPalette();
+  renderGrid();
+  loadSavedLayout();
+});
+
+function renderPalette() {
+  const palette = document.getElementById("plantPalette");
+  palette.innerHTML = "";
+
+  Object.keys(COMPANION_RULES).forEach(plant => {
+    const div = document.createElement("div");
+    div.className = `plant-item ${plant === selectedPlant ? 'selected' : ''}`;
+    div.innerHTML = `${COMPANION_RULES[plant].icon}<br>${plant.replace('_', ' ')}`;
+    div.onclick = () => {
+      selectedPlant = plant;
+      document.querySelectorAll(".plant-item").forEach(el => el.classList.remove("selected"));
+      div.classList.add("selected");
+      updateAdvice(plant);
+    };
+    palette.appendChild(div);
+  });
+}
+
+function updateAdvice(plant) {
+  const rules = COMPANION_RULES[plant];
+  const advice = document.getElementById("companionAdvice");
+  advice.innerHTML = `
+    <b>${rules.icon} ${plant.replace('_', ' ')} :</b><br>
+    ✅ <b>Excellents voisins (Symbiose) :</b> ${rules.friends.join(", ") || "Aucun spécifique"}<br>
+    ❌ <b>À éloigner (Incompatibles) :</b> ${rules.enemies.join(", ") || "Aucun spécifique"}
+  `;
+}
+
+function renderGrid() {
+  const grid = document.getElementById("gardenGrid");
+  grid.innerHTML = "";
+
+  for (let i = 0; i < 25; i++) {
+    const cell = document.createElement("div");
+    cell.className = "grid-cell";
+    cell.dataset.index = i;
+
+    const plantKey = gridData[i];
+    if (plantKey && COMPANION_RULES[plantKey]) {
+      cell.innerHTML = `
+        <span class="cell-icon">${COMPANION_RULES[plantKey].icon}</span>
+        <span>${plantKey.replace('_', ' ')}</span>
+      `;
+    } else {
+      cell.innerHTML = `<span style="opacity:0.4;">Terre libre</span>`;
+    }
+
+    cell.onclick = () => placePlant(i);
+    grid.appendChild(cell);
+  }
+
+  checkAllNeighbors();
+}
+
+function placePlant(index) {
+  if (gridData[index] === selectedPlant) {
+    gridData[index] = null; // Retirer si ré-appuyé
+  } else {
+    gridData[index] = selectedPlant;
+  }
+  renderGrid();
+}
+
+// Vérification de la symbiose / antagonisme des voisins
+function checkAllNeighbors() {
+  const cells = document.querySelectorAll(".grid-cell");
+  
+  for (let i = 0; i < 25; i++) {
+    cells[i].classList.remove("symbiotic", "antagonistic");
+    const current = gridData[i];
+    if (!current) continue;
+
+    const neighbors = getNeighborIndices(i);
+    let isGood = false;
+    let isBad = false;
+
+    neighbors.forEach(nIdx => {
+      const neighborPlant = gridData[nIdx];
+      if (!neighborPlant) return;
+
+      if (COMPANION_RULES[current].friends.includes(neighborPlant)) isGood = true;
+      if (COMPANION_RULES[current].enemies.includes(neighborPlant)) isBad = true;
+    });
+
+    if (isGood && !isBad) cells[i].classList.add("symbiotic");
+    if (isBad) cells[i].classList.add("antagonistic");
+  }
+}
+
+function getNeighborIndices(index) {
+  const row = Math.floor(index / 5);
+  const col = index % 5;
+  const neighbors = [];
+
+  if (row > 0) neighbors.push(index - 5); // Haut
+  if (row < 4) neighbors.push(index + 5); // Bas
+  if (col > 0) neighbors.push(index - 1); // Gauche
+  if (col < 4) neighbors.push(index + 1); // Droite
+
+  return neighbors;
+}
+
+function saveGardenLayout() {
+  localStorage.setItem("jardinexpress_parcelle_2d", JSON.stringify(gridData));
+  alert("✅ Plan de votre parcelle sauvegardé avec succès !");
+}
+
+function loadSavedLayout() {
+  const saved = localStorage.getItem("jardinexpress_parcelle_2d");
+  if (saved) {
+    gridData = JSON.parse(saved);
+    renderGrid();
+  }
+}
+
+function clearGardenLayout() {
+  if (confirm("Réinitialiser toute la parcelle ?")) {
+    gridData = Array(25).fill(null);
+    localStorage.removeItem("jardinexpress_parcelle_2d");
+    renderGrid();
+  }
+}
+</script>
+
+</body>
+</html>

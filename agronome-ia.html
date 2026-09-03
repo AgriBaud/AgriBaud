@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JardinExpress – Assistant Agronome IA Virtuel</title>
+
+<style>
+:root {
+  --primary: #2e7d32;
+  --bg: #f4f8f4;
+  --chat-user: #e8f5e9;
+  --chat-ai: #ffffff;
+}
+
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: var(--bg);
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+header {
+  background: var(--primary);
+  color: white;
+  padding: 15px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+.back-btn {
+  background: #ffa726;
+  color: white;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  font-size: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.chat-container {
+  max-width: 800px;
+  width: 95%;
+  margin: 15px auto;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  overflow: hidden;
+}
+
+.chat-messages {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.message {
+  max-width: 80%;
+  padding: 12px 16px;
+  border-radius: 14px;
+  font-size: 14px;
+  line-height: 1.5;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+.message.user {
+  align-self: flex-end;
+  background: #c8e6c9;
+  color: #1b5e20;
+  border-bottom-right-radius: 2px;
+}
+
+.message.ai {
+  align-self: flex-start;
+  background: var(--chat-ai);
+  border: 1px solid #e0e0e0;
+  border-bottom-left-radius: 2px;
+}
+
+.quick-prompts {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 10px 15px;
+  background: #f9fbf9;
+  border-top: 1px solid #eee;
+}
+
+.prompt-chip {
+  padding: 6px 12px;
+  background: #e8f5e9;
+  border: 1px solid #a5d6a7;
+  border-radius: 16px;
+  font-size: 12px;
+  font-weight: bold;
+  color: var(--primary);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.prompt-chip:hover {
+  background: var(--primary);
+  color: white;
+}
+
+.chat-input-area {
+  display: flex;
+  padding: 12px 15px;
+  background: #ffffff;
+  border-top: 1px solid #eee;
+  gap: 10px;
+}
+
+.chat-input-area input {
+  flex: 1;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  outline: none;
+  font-size: 15px;
+}
+
+.chat-input-area button {
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 0 18px;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.voice-btn {
+  background: #ff9800 !important;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div style="font-size: 20px; font-weight: bold;">
+    🤖 Assistant Agronome Virtuel IA
+  </div>
+  <a href="index.html" class="back-btn" title="Retour à l'accueil">←</a>
+</header>
+
+<div class="chat-container">
+  <div class="chat-messages" id="chatMessages">
+    <div class="message ai">
+      <b>🌱 Agronome IA JardinExpress :</b><br>
+      Bonjour ! Je suis votre expert agronome virtuel. Posez-moi vos questions sur le maraîchage, le traitement des maladies, les recettes bio (neem, cendres, purin) ou les saisons de culture au Bénin !
+    </div>
+  </div>
+
+  <div class="quick-prompts">
+    <div class="prompt-chip" onclick="askQuickPrompt('Comment préparer du purin de neem ?')">🍃 Recette Purin de Neem</div>
+    <div class="prompt-chip" onclick="askQuickPrompt('Comment traiter la maladie de la tomate (mildiou) ?')">🍅 Traitement Mildiou</div>
+    <div class="prompt-chip" onclick="askQuickPrompt('Quelle est la meilleure période de semis du gombo au Bénin ?')">🌧️ Saison du Gombo</div>
+    <div class="prompt-chip" onclick="askQuickPrompt('Comment fabriquer un engrais naturel liquide ?')">🧪 Engrais Liquide Bio</div>
+  </div>
+
+  <div class="chat-input-area">
+    <input type="text" id="userInput" placeholder="Posez votre question agricole ici..." onkeydown="if(event.key==='Enter') sendMessage()">
+    <button class="voice-btn" id="voiceBtn" onclick="toggleVoiceInput()" title="Parler au micro">🎙️</button>
+    <button onclick="sendMessage()">Envoyer</button>
+  </div>
+</div>
+
+<script>
+/* CONNAISSANCE AGRONOMIQUE EMBARQUÉE */
+const AGRONOMIC_KNOWLEDGE = [
+  {
+    keywords: ["neem", "margousier", "purin", "insecticide bio"],
+    response: "<b>🍃 Recette d'Insecticide Bio à base de Neem :</b><br>1. Piler 500g de graines ou feuilles fraîches de Neem.<br>2. Faire macérer dans 10 Litres d'eau pendant 24h à l'ombre.<br>3. Filtrer soigneusement et ajouter 1 cuillère à soupe de savon liquide (agent mouillant).<br>4. Pulvériser le soir sur les pucerons, chenilles et altises."
+  },
+  {
+    keywords: ["mildiou", "tomate", "taches brunes", "tuta"],
+    response: "<b>🍅 Prévention & Traitement du Mildiou de la Tomate :</b><br>1. Éviter d'arroser les feuilles.<br>2. Espacer les plants de 50 cm minimum.<br>3. Pulvériser de la Bouillie Bordelaise préventivement après chaque pluie (20g/L).<br>4. Pour les chenilles (Tuta absoluta), utiliser des pièges à phéromones ou Bacillus thuringiensis."
+  },
+  {
+    keywords: ["gombo", "saison", "période", "semis gombo"],
+    response: "<b>🌧️ Période idéale pour le Gombo au Bénin :</b><br>- Semis principal : Mars à Mai (début des pluies).<br>- Semis de petite saison : Septembre.<br>- Durée du cycle : 60 à 75 jours.<br>- Astuce : Tremper les graines dans l'eau tiède 12h avant le semis pour accélérer la germination."
+  },
+  {
+    keywords: ["engrais", "compost", "liquide", "fertilisation"],
+    response: "<b>🧪 Recette de Thé de Compost (Engrais Liquide Bio) :</b><br>1. Mettre 2 kg de compost mûr ou fientes de volaille dans un sac de toile.<br>2. Plonger le sac dans un seau de 10L d'eau pendant 7 à 10 jours en remuant chaque jour.<br>3. Diluer 1 volume de ce jus dans 5 volumes d'eau claire avant d'arroser le pied de vos plantes."
+  },
+  {
+    keywords: ["cendre", "limace", "chenille", "puceron"],
+    response: "<b>🔥 Utilisation de la Cendre de Bois au Jardin :</b><br>1. Saupoudrer de la cendre sèche autour des pieds de chou et laitue pour former une barrière anti-limaces.<br>2. Apporter 1 poignée par m² au sol pour enrichir en potasse (très bon pour les tomates et piments)."
+  }
+];
+
+function sendMessage() {
+  const input = document.getElementById("userInput");
+  const text = input.value.trim();
+  if (!text) return;
+
+  addMessage(text, "user");
+  input.value = "";
+
+  setTimeout(() => {
+    generateAIResponse(text);
+  }, 600);
+}
+
+function askQuickPrompt(text) {
+  document.getElementById("userInput").value = text;
+  sendMessage();
+}
+
+function addMessage(text, sender) {
+  const container = document.getElementById("chatMessages");
+  const div = document.createElement("div");
+  div.className = `message ${sender}`;
+  
+  if (sender === "ai") {
+    div.innerHTML = `<b>🌱 Agronome IA :</b><br>${text}`;
+  } else {
+    div.textContent = text;
+  }
+
+  container.appendChild(div);
+  container.scrollTop = container.scrollHeight;
+}
+
+function generateAIResponse(query) {
+  const q = query.toLowerCase();
+  let foundMatch = null;
+
+  for (const k of AGRONOMIC_KNOWLEDGE) {
+    if (k.keywords.some(kw => q.includes(kw))) {
+      foundMatch = k.response;
+      break;
+    }
+  }
+
+  if (foundMatch) {
+    addMessage(foundMatch, "ai");
+    speakText(foundMatch.replace(/<[^>]*>?/gm, ''));
+  } else {
+    const genericResponse = `Pour votre question sur "${query}", voici ma recommandation agronome :<br>- Veillez à maintenir un sol riche en matière organique (compost mûr).<br>- Assurez un arrosage régulier sans excès d'eau au feuillage.<br>- Pratiquez la rotation des cultures tous les ans pour prévenir l'épuisement du sol.`;
+    addMessage(genericResponse, "ai");
+    speakText("Voici ma recommandation agronome. Assurez un arrosage régulier et maintenez un sol riche en compost.");
+  }
+}
+
+// Reconnaissance vocale (Web Speech API)
+function toggleVoiceInput() {
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognition) return alert("La reconnaissance vocale n'est pas supportée sur ce navigateur.");
+
+  const recognition = new SpeechRecognition();
+  recognition.lang = 'fr-FR';
+  recognition.start();
+
+  const voiceBtn = document.getElementById("voiceBtn");
+  voiceBtn.style.background = "#e53935";
+
+  recognition.onresult = (event) => {
+    const transcript = event.results[0][0].transcript;
+    document.getElementById("userInput").value = transcript;
+    voiceBtn.style.background = "#ff9800";
+    sendMessage();
+  };
+
+  recognition.onerror = () => {
+    voiceBtn.style.background = "#ff9800";
+  };
+}
+
+// Synthèse vocale (Text-to-Speech)
+function speakText(text) {
+  if ('speechSynthesis' in window) {
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'fr-FR';
+    window.speechSynthesis.speak(utterance);
+  }
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Culture Potagère - JardinExpress</title>
+
+<style>
+/* ----- BOUTON DE RETOUR ----- */
+.back-btn {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: #FFA500;
+    color: white;
+    font-size: 26px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.3);
+    cursor: pointer;
+    text-decoration: none;
+    z-index: 1000;
+    transition: transform 0.2s;
+}
+.back-btn:hover {
+    transform: scale(1.1);
+}
+
+/* ----- STYLE GLOBAL ----- */
+body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background-color: #f4f8f4;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    background-attachment: fixed;
+    margin: 0;
+    padding: 0;
+}
+
+/* ----- EN-TÊTE ----- */
+header {
+    text-align: center;
+    color: white;
+    padding: 70px 20px 30px;
+    font-size: 32px;
+    font-weight: bold;
+    text-shadow: 2px 2px 8px #000;
+    background: rgba(0,0,0,0.5);
+    backdrop-filter: blur(4px);
+}
+
+/* ----- BARRE DE RECHERCHE ----- */
+.search-box {
+    display: flex;
+    align-items: center;
+    background: white;
+    padding: 5px;
+    border-radius: 10px;
+    margin: 15px 20px;
+    max-width: 900px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+.search-box input {
+    border: none;
+    outline: none;
+    font-size: 16px;
+    flex: 1;
+    padding: 8px 12px;
+}
+.search-box button {
+    background: #ff9800;
+    border: none;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+/* ----- SCROLL HORIZONTAL ----- */
+.horizontal-scroll {
+    display: flex;
+    gap: 20px;
+    overflow-x: auto;
+    padding: 20px;
+    scroll-behavior: smooth;
+}
+.horizontal-scroll::-webkit-scrollbar {
+    display: none;
+}
+
+/* ----- CARTES ----- */
+.big-card {
+    width: 270px;
+    height: 300px;
+    background: rgba(255, 255, 255, 0.92);
+    border-radius: 18px;
+    padding: 18px;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    backdrop-filter: blur(5px);
+}
+.card-title {
+    text-align: center;
+    font-size: 19px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #2e7d32;
+    border-bottom: 2px solid #c8e6c9;
+    padding-bottom: 6px;
+}
+
+.card-content {
+    overflow-y: auto;
+    padding-right: 5px;
+    flex: 1;
+}
+.card-content::-webkit-scrollbar { width: 4px; }
+.card-content::-webkit-scrollbar-thumb { background: #4caf50; border-radius: 10px; }
+
+.big-card h3 {
+    margin-top: 10px;
+    font-size: 15px;
+    color: #1b5e20;
+}
+.big-card ul {
+    list-style: none;
+    padding-left: 5px;
+    margin: 8px 0;
+}
+.big-card li {
+    padding: 4px 0;
+    font-size: 13px;
+    line-height: 1.4;
+    display: flex;
+}
+.big-card li::before {
+    content: "• ";
+    color: #4caf50;
+    font-weight: bold;
+    margin-right: 6px;
+}
+</style>
+</head>
+<body>
+
+<a href="index.html" class="back-btn" title="Retour à l'accueil">←</a>
+
+<header id="plantTitle">Culture Potagère</header>
+
+<div class="search-box">
+    <input type="text" id="searchInput" placeholder="Rechercher une information..." onkeyup="searchContent()">
+    <button>🔍</button>
+</div>
+
+<div class="horizontal-scroll" id="cardContainer">
+    <!-- Rempli dynamiquement par JS -->
+</div>
+
+<script>
+/* BASE DE DONNÉES DES PLANTES POUR TEMPLATE DYNAMIQUE */
+const plantDetailsData = {
+  aubergine: {
+    name: "Aubergine - Solanum melongena",
+    image: "aubergine.jpg",
+    desc: ["Famille : Solanacées", "Plante potagère appréciant la chaleur (20-30°C)", "Fruits allongés ou ronds violets riches en fibres et antioxydants", "Sol profond, fertile et bien drainé (pH 6-7)"],
+    itinerary: ["Préparation : Labour à 25 cm avec apport massif de compost", "Semis en pépinière puis repiquage à 30 jours (60x50 cm)", "Entretien : Buttage et tuteurage recommandés", "Récolte à 80-90 jours après semis"],
+    cycle: ["Germination : 8-10 jours", "Pépinière : 30 jours", "Récolte : 80-120 jours"],
+    diseases: ["Mildiou et Oïdium : Taches brunes/blanches sur feuilles", "Attaques d'Acariens et Pucerons : Feuilles gaufrées", "Lutte : Extraits de Neem et décoction de prêle"],
+    bestPractices: ["Pailler le sol pour garder la fraîcheur", "Arroser au pied sans mouiller le feuillage", "Pratiquer la rotation des cultures (ne pas replanter après tomate/piment)"]
+  },
+  navet: {
+    name: "Navet - Brassica rapa",
+    image: "navet.jpg",
+    desc: ["Famille : Brassicacées", "Légume-racine croquant riche en vitamines C", "Apprécie un climat frais ou tempéré", "Sol meuble, sans cailloux"],
+    itinerary: ["Semis direct en lignes espacées de 25 cm", "Éclaircissage à 10 cm entre les plants à 15 jours", "Arrosage régulier pour éviter la texture fibreuse", "Récolte à 50-60 jours"],
+    cycle: ["Germination : 4-6 jours", "Croissance : 45-60 jours", "Récolte : 2-3 mois"],
+    diseases: ["Altises : Petits trous dans les feuilles", "Lutte : Arrosages fréquents et voiles anti-insectes"],
+    bestPractices: ["Maintenir le sol toujours humide", "Récolter jeune pour une chair tendre"]
+  },
+  radis: {
+    name: "Radis - Raphanus sativus",
+    image: "radis.jpg",
+    desc: ["Famille : Brassicacées", "Légume racine à croissance très rapide", "Riche en minéraux et éléments piquants stimulants"],
+    itinerary: ["Semis direct à la volée ou en ligne à 1 cm de profondeur", "Arrosage quotidien léger", "Récolte très rapide à 20-30 jours"],
+    cycle: ["Germination : 3-4 jours", "Récolte : 21-30 jours"],
+    diseases: ["Altises et Limaces", "Lutte : Cendres de bois et arrosage frais"],
+    bestPractices: ["Espacez les semis tous les 15 jours pour une récolte continue"]
+  },
+  basilic: {
+    name: "Basilic - Ocimum basilicum",
+    image: "basilic.jpg",
+    desc: ["Famille : Lamiacées", "Herbe aromatique très parfumée", "Plante compagne idéale de la tomate"],
+    itinerary: ["Semis en godets puis repiquage", "Pincer les sommités florales pour favoriser le feuillage", "Récolte régulière feuille par feuille"],
+    cycle: ["Germination : 7-10 jours", "Récolte continue pendant 3-5 mois"],
+    diseases: ["Pucerons et mildiou du basilic", "Lutte : Décoction d'ail et bonne aération"],
+    bestPractices: ["Planter à proximité des tomates pour repousser les pucerons"]
+  },
+  menthe: {
+    name: "Menthe - Mentha spp.",
+    image: "menthe.jpg",
+    desc: ["Famille : Lamiacées", "Plante vivace aromatique vigoureuse", "Très recherchée pour infusions et jus frais"],
+    itinerary: ["Plantation par bouturage ou division de touffes", "Cultiver de préférence en pot ou bac pour contenir la croissance", "Arrosages fréquents"],
+    cycle: ["Vivace à récolte continue"],
+    diseases: ["Rouille de la menthe (taches orangées)", "Lutte : Couper les tiges atteintes à ras"],
+    bestPractices: ["Maintenir en endroit mi-ombragé et frais"]
+  }
+};
+
+function getQueryParam(param) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(param);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const plantId = (getQueryParam('id') || 'aubergine').toLowerCase();
+    const data = plantDetailsData[plantId] || {
+        name: plantId.charAt(0).toUpperCase() + plantId.slice(1) + " - Culture Potagère",
+        image: plantId + ".jpg",
+        desc: ["Plante potagère appréciée en maraîchage.", "Sol riche, meuble et bien drainé.", "Nécessite un bon ensoleillement."],
+        itinerary: ["Préparation du sol avec compost mûr.", "Semis et repiquage selon les espacements recommandés.", "Entretien régulier et désherbage.", "Récolte à maturité."],
+        cycle: ["Germination : 5-10 jours", "Croissance : 30-60 jours", "Récolte selon la variété."],
+        diseases: ["Surveiller les ravageurs habituels (pucerons, chenilles).", "Traiter préventivement avec des solutions biologiques (Neem, savon noir)."],
+        bestPractices: ["Effectuer un paillage pour maintenir l'humidité.", "Respecter la rotation des cultures."]
+    };
+
+    document.getElementById('plantTitle').textContent = "Culture : " + data.name;
+    if (data.image) {
+        document.body.style.backgroundImage = `url('${data.image}'), url('tomate.jpg')`;
+    }
+
+    const container = document.getElementById('cardContainer');
+    container.innerHTML = `
+        <div class="big-card">
+            <h2 class="card-title">📘 Description</h2>
+            <div class="card-content">
+                <ul>${data.desc.map(item => `<li>${item}</li>`).join('')}</ul>
+            </div>
+        </div>
+
+        <div class="big-card">
+            <h2 class="card-title">🌱 Itinéraire Technique</h2>
+            <div class="card-content">
+                <ul>${data.itinerary.map(item => `<li>${item}</li>`).join('')}</ul>
+            </div>
+        </div>
+
+        <div class="big-card">
+            <h2 class="card-title">⏳ Cycle & Durée</h2>
+            <div class="card-content">
+                <ul>${data.cycle.map(item => `<li>${item}</li>`).join('')}</ul>
+            </div>
+        </div>
+
+        <div class="big-card">
+            <h2 class="card-title">⚠️ Maladies & Ravageurs</h2>
+            <div class="card-content">
+                <ul>${data.diseases.map(item => `<li>${item}</li>`).join('')}</ul>
+            </div>
+        </div>
+
+        <div class="big-card">
+            <h2 class="card-title">💡 Bonnes Pratiques</h2>
+            <div class="card-content">
+                <ul>${data.bestPractices.map(item => `<li>${item}</li>`).join('')}</ul>
+            </div>
+        </div>
+    `;
+});
+
+function searchContent() {
+    let filter = document.getElementById("searchInput").value.toLowerCase();
+    document.querySelectorAll(".big-card").forEach(card => {
+        card.style.display = card.innerText.toLowerCase().includes(filter) ? "flex" : "none";
+    });
+}
+</script>
+
+</body>
+</html>

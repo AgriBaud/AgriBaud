@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>JardinExpress – Calendrier Agricole Intelligent</title>
+
+<!-- FULLCALENDAR -->
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
+
+<style>
+:root{
+  --green: #2e7d32;
+  --light-green: #4caf50;
+  --bg: #f4f8f4;
+  --card-bg: #ffffff;
+  --water: #0288d1;
+  --fert: #ff9800;
+  --harvest: #e91e63;
+  --maint: #9c27b0;
+  --check: #4caf50;
+}
+
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  margin: 0;
+  background: var(--bg);
+  color: #333;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* En-tête */
+header {
+  background: var(--green);
+  color: #fff;
+  padding: 15px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+.header-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.back-btn {
+  background: #ffa726;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 42px;
+  height: 42px;
+  font-size: 22px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  transition: transform 0.2s;
+}
+
+.back-btn:hover {
+  transform: scale(1.1);
+}
+
+/* Layout principal */
+.container {
+  max-width: 1200px;
+  width: 95%;
+  margin: 15px auto;
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  gap: 15px;
+  flex: 1;
+}
+
+@media (max-width: 900px) {
+  .container {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Cartes & Panneaux */
+.panel {
+  background: var(--card-bg);
+  padding: 16px;
+  border-radius: 14px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+}
+
+.panel h3 {
+  margin-top: 0;
+  color: var(--green);
+  font-size: 17px;
+  border-bottom: 2px solid #e8f5e9;
+  padding-bottom: 8px;
+}
+
+label {
+  display: block;
+  margin-top: 10px;
+  font-weight: 600;
+  font-size: 13px;
+  color: #555;
+}
+
+input, select, button {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+  font-size: 14px;
+}
+
+button.btn-main {
+  background: var(--green);
+  color: white;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s;
+  margin-top: 12px;
+}
+
+button.btn-main:hover {
+  background: #1b5e20;
+}
+
+button.btn-danger {
+  background: #e53935;
+  color: white;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 8px;
+}
+
+button.btn-danger:hover {
+  background: #c62828;
+}
+
+/* Boutons de sélection rapide de plantes */
+.plant-scroll {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 6px 0;
+  margin-bottom: 10px;
+}
+
+.plant-chip {
+  padding: 6px 12px;
+  border-radius: 16px;
+  background: #e8f5e9;
+  border: 1px solid #a5d6a7;
+  color: #2e7d32;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.plant-chip:hover {
+  background: var(--green);
+  color: white;
+}
+
+/* Liste des tâches */
+.task-list {
+  max-height: 380px;
+  overflow-y: auto;
+  margin-top: 10px;
+}
+
+.task-item {
+  padding: 10px;
+  margin-bottom: 8px;
+  border-radius: 8px;
+  background: #f9fbf9;
+  border-left: 4px solid var(--green);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.04);
+}
+
+.task-badge {
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  color: white;
+  font-weight: bold;
+}
+
+.task-actions {
+  display: flex;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.task-actions button {
+  width: auto;
+  padding: 4px 8px;
+  font-size: 12px;
+}
+
+/* Calendrier */
+#calendar {
+  background: white;
+  padding: 10px;
+  border-radius: 14px;
+  min-height: 550px;
+}
+
+/* Popup d'événement */
+.event-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  z-index: 2000;
+  display: none;
+  max-width: 320px;
+  width: 90%;
+}
+
+.event-popup h3 { margin-top: 0; color: var(--green); }
+
+footer {
+  text-align: center;
+  padding: 15px;
+  background: var(--green);
+  color: white;
+  font-size: 13px;
+  margin-top: 20px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="header-title">
+    <span>🌱 JardinExpress</span> — Calendrier Agricole
+  </div>
+  <a href="index.html" class="back-btn" title="Retour à l'accueil">←</a>
+</header>
+
+<div class="container">
+  <!-- Colonne de configuration & tâches -->
+  <div>
+    <div class="panel">
+      <h3>📅 Planification d'une Culture</h3>
+      
+      <label>1. Sélectionner une culture :</label>
+      <div class="plant-scroll" id="quickPlants"></div>
+      <select id="selectPlante"></select>
+
+      <label>2. Date de semis / mise en terre :</label>
+      <input type="date" id="dateSemis">
+
+      <label>3. Fréquence d'arrosage (jours) :</label>
+      <input type="number" id="waterFreq" placeholder="Par défaut selon la plante" min="1" max="14">
+
+      <label>4. Photo du jardin (optionnel) :</label>
+      <input type="file" id="photoJardin" accept="image/*">
+
+      <button class="btn-main" id="btnGenerate">🌱 Générer le Calendrier</button>
+      <button class="btn-danger" id="btnClearSave">🗑 Effacer Sauvegarde Culture</button>
+    </div>
+
+    <!-- Section Plantes Sauvegardées -->
+    <div class="panel" style="margin-top: 15px;">
+      <h3>📋 Vos Cultures En cours & Tâches</h3>
+      
+      <label>Filtrer par type de tâche :</label>
+      <select id="filterType" onchange="renderTasks()">
+        <option value="all">Toutes les tâches</option>
+        <option value="arrosage">💧 Arrosage</option>
+        <option value="fertilisation">🌿 Fertilisation</option>
+        <option value="traitement">🐛 Traitement</option>
+        <option value="repiquage">🌱 Repiquage</option>
+        <option value="récolte">🌾 Récolte</option>
+      </select>
+
+      <div class="task-list" id="taskListContainer"></div>
+    </div>
+  </div>
+
+  <!-- Colonne Calendrier -->
+  <div class="panel">
+    <div id="calendar"></div>
+  </div>
+</div>
+
+<!-- Popup d'information de tâche -->
+<div class="event-popup" id="eventPopup">
+  <h3 id="popupTitle">Tâche</h3>
+  <p><b>Date :</b> <span id="popupDate"></span></p>
+  <p id="popupDesc"></p>
+  <button class="btn-main" onclick="closePopup()">Fermer</button>
+</div>
+
+<footer>
+  © 2025 JardinExpress — Assistant Agricole Tropical & Maraîcher (Bénin)
+</footer>
+
+<script>
+/* 🌾 BASE DE DONNÉES AGRONOMIQUE ET SAISONNIÈRE */
+const plantDB = {
+  Tomate: {
+    nursery: true, nurseryDays: 25, duration: 85, waterEvery: 3,
+    tasks: [
+      { day: -10, title: "🪱 Préparation du sol", color: "#795548", desc: "Aérer la terre, ajouter du compost mûr." },
+      { day: 0, title: "🌱 Semis en pépinière", color: "var(--green)", desc: "Semer en godets ou terrine à l'abri." },
+      { day: 25, title: "🌱 Repiquage au jardin", color: "#3f51b5", desc: "Transplanter les plants vigoureux (80x50 cm)." },
+      { day: 30, title: "🌿 Fertilisation NPK (1)", color: "var(--fert)", desc: "Apport d'engrais riche en azote et potassium." },
+      { day: 35, title: "🐛 Traitement préventif (Mildiou)", color: "#ff7043", desc: "Pulvériser extrait de neem ou bouillie bordelaise." },
+      { day: 45, title: "🪵 Tuteurage & Taille gourmands", color: "var(--maint)", desc: "Fixer les tuteurs et éliminer les pousses axillaires." },
+      { day: 60, title: "🌿 Fertilisation (2)", color: "var(--fert)", desc: "Apport de potasse pour stimuler la fructification." },
+      { day: 85, title: "🌾 Début de récolte", color: "var(--harvest)", desc: "Récolter les tomates mûres régulièrement." }
+    ]
+  },
+  Gombo: {
+    nursery: false, duration: 65, waterEvery: 3,
+    tasks: [
+      { day: -7, title: "🪱 Préparation du sol", color: "#795548", desc: "Labourer et incorporer du fumier." },
+      { day: 0, title: "🌱 Semis direct", color: "var(--green)", desc: "Semer 2-3 graines par poquet à 2 cm de profondeur." },
+      { day: 15, title: "🌱 Éclaircissage", color: "#8bc34a", desc: "Ne garder que le plant le plus fort par poquet." },
+      { day: 20, title: "🌿 Fertilisation 1", color: "var(--fert)", desc: "Premier apport d'engrais organique." },
+      { day: 35, title: "🧹 Sarclage & Buttage", color: "#9e9e9e", desc: "Désherber et ramener la terre au pied." },
+      { day: 40, title: "🐛 Traitement altises/pucerons", color: "#ff7043", desc: "Traiter préventivement contre les insectes." },
+      { day: 65, title: "🌾 Récolte des gombos", color: "var(--harvest)", desc: "Récolter les jeunes gombos tendres tous les 2-3 jours." }
+    ]
+  },
+  Piment: {
+    nursery: true, nurseryDays: 30, duration: 90, waterEvery: 4,
+    tasks: [
+      { day: -10, title: "🪱 Préparation du sol", color: "#795548", desc: "Bêcher et enrichir la terre en matière organique." },
+      { day: 0, title: "🌱 Semis pépinière", color: "var(--green)", desc: "Semer en pépinière bien arrosée." },
+      { day: 30, title: "🌱 Repiquage", color: "#3f51b5", desc: "Transplanter avec un écartement de 50x50 cm." },
+      { day: 40, title: "🌿 Fertilisation 1", color: "var(--fert)", desc: "Apport de compost décomposé au pied." },
+      { day: 60, title: "🐛 Traitement acariens/pucerons", color: "#ff7043", desc: "Surveiller le revers des feuilles." },
+      { day: 90, title: "🌾 Récolte des piments", color: "var(--harvest)", desc: "Récolter dès coloration rouge ou verte selon besoin." }
+    ]
+  },
+  Aubergine: {
+    nursery: true, nurseryDays: 30, duration: 90, waterEvery: 3,
+    tasks: [
+      { day: -10, title: "🪱 Préparation du sol", color: "#795548", desc: "Apport massif de compost bien décomposé." },
+      { day: 0, title: "🌱 Semis pépinière", color: "var(--green)", desc: "Semer au chaud ou sous ombrage." },
+      { day: 30, title: "🌱 Repiquage", color: "#3f51b5", desc: "Mettre en place au jardin à 60x50 cm." },
+      { day: 45, title: "🌿 Fertilisation & Buttage", color: "var(--fert)", desc: "Buter les pieds et amender." },
+      { day: 90, title: "🌾 Début de récolte", color: "var(--harvest)", desc: "Récolter les aubergines fermes et brillantes." }
+    ]
+  },
+  Carotte: {
+    nursery: false, duration: 75, waterEvery: 2,
+    tasks: [
+      { day: -7, title: "🪱 Préparation sol meuble", color: "#795548", desc: "Ameublir la terre sans cailloux." },
+      { day: 0, title: "🌱 Semis en ligne", color: "var(--green)", desc: "Semer finement en sillons espacés de 20 cm." },
+      { day: 20, title: "🌱 Éclaircissage (1)", color: "#8bc34a", desc: "Éclaircir à 3 cm entre les plants." },
+      { day: 35, title: "🌱 Éclaircissage (2) & Désherbage", color: "#8bc34a", desc: "Garder 5-6 cm entre les carottes." },
+      { day: 75, title: "🌾 Récolte des carottes", color: "var(--harvest)", desc: "Arracher selon les besoins." }
+    ]
+  },
+  Concombre: {
+    nursery: false, duration: 55, waterEvery: 2,
+    tasks: [
+      { day: -5, title: "🪱 Préparation du sol", color: "#795548", desc: "Enrichir fortement en matière organique." },
+      { day: 0, title: "🌱 Semis direct", color: "var(--green)", desc: "Semer 2-3 graines par poquet." },
+      { day: 20, title: "🪵 Tuteurage / Palissage", color: "var(--maint)", desc: "Installer des treillis pour faire grimper." },
+      { day: 30, title: "🐛 Prévention oïdium", color: "#ff7043", desc: "Traiter à la prêle ou au soufre." },
+      { day: 55, title: "🌾 Récolte régulière", color: "var(--harvest)", desc: "Récolter avant jaunissement." }
+    ]
+  },
+  Chou: {
+    nursery: true, nurseryDays: 25, duration: 85, waterEvery: 3,
+    tasks: [
+      { day: -10, title: "🪱 Préparation du sol", color: "#795548", desc: "Sol riche et bien frais." },
+      { day: 0, title: "🌱 Semis pépinière", color: "var(--green)", desc: "Semer sous voile de protection." },
+      { day: 25, title: "🌱 Repiquage", color: "#3f51b5", desc: "Transplanter à 50x50 cm." },
+      { day: 40, title: "🐛 Traitement chenilles", color: "#ff7043", desc: "Surveiller la noctuelle et la piéride." },
+      { day: 85, title: "🌾 Récolte des choux", color: "var(--harvest)", desc: "Couper les pommes bien fermes." }
+    ]
+  },
+  Laitue: {
+    nursery: false, duration: 45, waterEvery: 2,
+    tasks: [
+      { day: -3, title: "🪱 Préparation du sol", color: "#795548", desc: "Terre fine et fraîche." },
+      { day: 0, title: "🌱 Semis direct / en ligne", color: "var(--green)", desc: "Semer très peu profondément." },
+      { day: 15, title: "🌱 Éclaircissage à 25 cm", color: "#8bc34a", desc: "Laisser de l'espace pour la pomme." },
+      { day: 45, title: "🌾 Récolte des laitues", color: "var(--harvest)", desc: "Couper au collet le matin." }
+    ]
+  }
+};
+
+let currentPlant = null;
+let calendar = null;
+
+// Détection de la saison au Bénin
+function getSeason(dateStr) {
+  const month = new Date(dateStr + 'T00:00:00').getMonth() + 1;
+  // Mars-Juillet & Septembre-Novembre = saisons des pluies
+  if ([3,4,5,6,7,9,10,11].includes(month)) return 'rainy';
+  return 'dry';
+}
+
+function addDays(dateStr, days) {
+  const d = new Date(dateStr + 'T00:00:00');
+  d.setDate(d.getDate() + days);
+  return d.toISOString().split('T')[0];
+}
+
+// Initialisation au chargement
+document.addEventListener('DOMContentLoaded', () => {
+  // Remplir le select et la barre de puces
+  const select = document.getElementById('selectPlante');
+  const quick = document.getElementById('quickPlants');
+  
+  Object.keys(plantDB).forEach(p => {
+    const opt = document.createElement('option');
+    opt.value = p;
+    opt.textContent = p;
+    select.appendChild(opt);
+
+    const chip = document.createElement('div');
+    chip.className = 'plant-chip';
+    chip.textContent = p;
+    chip.onclick = () => { select.value = p; };
+    quick.appendChild(chip);
+  });
+
+  // Date du jour par défaut
+  document.getElementById('dateSemis').value = new Date().toISOString().split('T')[0];
+
+  // Initialiser FullCalendar
+  const calendarEl = document.getElementById('calendar');
+  calendar = new FullCalendar.Calendar(calendarEl, {
+    locale: 'fr',
+    initialView: 'dayGridMonth',
+    headerToolbar: {
+      left: 'prev,next today',
+      center: 'title',
+      right: 'dayGridMonth,listWeek'
+    },
+    eventClick: function(info) {
+      document.getElementById('popupTitle').textContent = info.event.title;
+      document.getElementById('popupDate').textContent = info.event.startStr;
+      document.getElementById('popupDesc').textContent = info.event.extendedProps.desc || 'Aucune description spécifique.';
+      document.getElementById('eventPopup').style.display = 'block';
+    }
+  });
+  calendar.render();
+
+  document.getElementById('btnGenerate').addEventListener('click', generateCalendar);
+  document.getElementById('btnClearSave').addEventListener('click', clearSave);
+
+  // Charger la première plante par défaut
+  loadPlantSave(select.value);
+});
+
+function closePopup() {
+  document.getElementById('eventPopup').style.display = 'none';
+}
+
+function generateCalendar() {
+  const plantName = document.getElementById('selectPlante').value;
+  const semisDate = document.getElementById('dateSemis').value;
+  if (!semisDate) return alert('Veuillez choisir une date de semis.');
+
+  currentPlant = plantName;
+  const data = plantDB[plantName];
+  if (!data) return;
+
+  calendar.removeAllEvents();
+  const season = getSeason(semisDate);
+  const events = [];
+
+  // Tâches principales
+  data.tasks.forEach(t => {
+    if (t.title.includes("Repiquage") && !data.nursery) return;
+    events.push({
+      title: t.title + ` (${plantName})`,
+      start: addDays(semisDate, t.day),
+      color: t.color,
+      desc: t.desc
+    });
+  });
+
+  // Arrosages périodiques
+  let wFreq = parseInt(document.getElementById('waterFreq').value) || data.waterEvery;
+  if (season === 'dry') wFreq = Math.max(1, wFreq - 1); // Arrosage plus fréquent en saison sèche
+
+  for (let i = 1; i <= data.duration; i += wFreq) {
+    events.push({
+      title: `💧 Arrosage (${plantName})`,
+      start: addDays(semisDate, i),
+      color: "var(--water)",
+      desc: season === 'dry' ? "Irrigation renforcée (saison sèche)." : "Arrosage normal selon l'humidité du sol."
+    });
+  }
+
+  events.forEach(e => calendar.addEvent(e));
+  
+  saveToLocalStorage(plantName, events);
+  renderTasks();
+}
+
+function saveToLocalStorage(plantName, events) {
+  const saveObj = {
+    timestamp: new Date().toISOString(),
+    events: events
+  };
+  localStorage.setItem('jardinexpress_' + plantName, JSON.stringify(saveObj));
+}
+
+function loadPlantSave(plantName) {
+  currentPlant = plantName;
+  const saved = localStorage.getItem('jardinexpress_' + plantName);
+  calendar.removeAllEvents();
+  if (saved) {
+    const data = JSON.parse(saved);
+    data.events.forEach(e => calendar.addEvent(e));
+  }
+  renderTasks();
+}
+
+function clearSave() {
+  const plantName = document.getElementById('selectPlante').value;
+  if (confirm(`Effacer les données sauvegardées pour ${plantName} ?`)) {
+    localStorage.removeItem('jardinexpress_' + plantName);
+    calendar.removeAllEvents();
+    renderTasks();
+    alert('Sauvegarde effacée avec succès.');
+  }
+}
+
+function renderTasks() {
+  const container = document.getElementById('taskListContainer');
+  container.innerHTML = '';
+
+  const filter = document.getElementById('filterType').value.toLowerCase();
+  const events = calendar.getEvents().sort((a, b) => new Date(a.start) - new Date(b.start));
+
+  if (events.length === 0) {
+    container.innerHTML = '<p style="color:#777; font-size:13px;">Aucune tâche programmée. Sélectionnez une culture et cliquez sur "Générer".</p>';
+    return;
+  }
+
+  events.forEach(e => {
+    const title = e.title.toLowerCase();
+    if (filter !== 'all' && !title.includes(filter)) return;
+
+    const div = document.createElement('div');
+    div.className = 'task-item';
+    div.innerHTML = `
+      <span class="task-badge" style="background:${e.backgroundColor || '#2e7d32'}">${e.title.split(' ')[0]}</span>
+      <b>${e.startStr}</b>
+      <div>${e.title}</div>
+    `;
+
+    const actions = document.createElement('div');
+    actions.className = 'task-actions';
+
+    const btnDone = document.createElement('button');
+    btnDone.textContent = '✔ Terminé';
+    btnDone.style.background = 'var(--check)';
+    btnDone.style.color = 'white';
+    btnDone.onclick = () => {
+      e.remove();
+      renderTasks();
+    };
+
+    const btnSnooze = document.createElement('button');
+    btnSnooze.textContent = '⏰ +1 jour';
+    btnSnooze.style.background = '#ff9800';
+    btnSnooze.style.color = 'white';
+    btnSnooze.onclick = () => {
+      e.setStart(addDays(e.startStr, 1));
+      renderTasks();
+    };
+
+    actions.appendChild(btnDone);
+    actions.appendChild(btnSnooze);
+    div.appendChild(actions);
+
+    container.appendChild(div);
+  });
+}
+</script>
+
+</body>
+</html>

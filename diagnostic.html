@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Diagnostic Intelligent</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: { extend: { colors: { brand: '#16a34a', bgLight: '#f0fdf4' } } }
+    }
+  </script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body { font-family: 'Segoe UI', system-ui, sans-serif; }
+    .disease-card.selected { border: 2px solid #ef4444; background-color: #fef2f2; }
+  </style>
+</head>
+<body class="bg-bgLight text-gray-800 flex flex-col min-h-screen">
+
+  <header class="bg-brand text-white shadow-md sticky top-0 z-50">
+    <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+      <div class="flex items-center gap-3">
+        <a href="index.html" class="text-white text-xl hover:text-green-200"><i class="fas fa-arrow-left"></i></a>
+        <h1 class="text-xl font-bold leading-tight">Diagnostic V1</h1>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-grow container mx-auto px-4 py-6 max-w-4xl">
+    
+    <div class="bg-white rounded-2xl shadow-md border border-green-100 p-6 mb-8 text-center">
+        <h2 class="text-2xl font-bold text-gray-800 mb-2">Quel est le problème de votre plante ?</h2>
+        <p class="text-gray-600 mb-6">Prenez une photo ou choisissez la maladie qui ressemble le plus à ce que vous observez dans votre champ.</p>
+        
+        <!-- Simulate Upload -->
+        <label for="cameraInput" class="inline-flex items-center gap-2 bg-yellow-500 hover:bg-yellow-400 text-white font-bold py-3 px-8 rounded-full shadow-lg transition cursor-pointer text-lg">
+            <i class="fas fa-camera"></i> Analyser une photo
+        </label>
+        <input type="file" id="cameraInput" accept="image/*" capture="environment" class="hidden">
+        
+        <div id="uploadFeedback" class="hidden mt-4 text-green-700 font-semibold bg-green-50 p-3 rounded">
+            <i class="fas fa-spinner fa-spin mr-2"></i> Analyse IA en cours (simulation V1)... veuillez choisir manuellement ci-dessous.
+        </div>
+    </div>
+
+    <h3 class="text-xl font-bold text-gray-800 mb-4 border-b border-gray-200 pb-2">Sélectionnez les symptômes observés (Top 10)</h3>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8" id="diseasesList">
+        <!-- Injected via JS -->
+    </div>
+
+    <!-- Modal Traitement -->
+    <div id="treatmentModal" class="hidden fixed inset-0 bg-black/60 z-[100] flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full max-h-[90vh] flex flex-col overflow-hidden">
+            <div class="bg-red-600 text-white p-4 flex justify-between items-center">
+                <h3 class="font-bold text-lg" id="modalTitle">Maladie</h3>
+                <button id="closeModalBtn" class="text-white text-2xl hover:text-red-200">&times;</button>
+            </div>
+            <div class="p-5 overflow-y-auto">
+                <div class="mb-4">
+                    <h4 class="font-bold text-gray-700 uppercase text-xs mb-1">Symptômes</h4>
+                    <p class="text-gray-800" id="modalSymptoms"></p>
+                </div>
+                
+                <div class="bg-green-50 border-l-4 border-brand p-4 mb-4 rounded-r">
+                    <h4 class="font-bold text-brand uppercase text-xs mb-2"><i class="fas fa-leaf"></i> Traitement Biologique / Immédiat</h4>
+                    <p class="text-gray-800 font-medium" id="modalBio"></p>
+                </div>
+
+                <div class="bg-gray-50 border-l-4 border-gray-400 p-4 rounded-r">
+                    <h4 class="font-bold text-gray-600 uppercase text-xs mb-2"><i class="fas fa-flask"></i> Traitement Chimique</h4>
+                    <p class="text-gray-800 text-sm" id="modalChem"></p>
+                </div>
+            </div>
+            <div class="p-4 border-t border-gray-100 text-center">
+                <button id="understoodBtn" class="bg-brand text-white font-bold py-2 px-6 rounded-full hover:bg-green-700 w-full">Compris, appliquer le traitement</button>
+            </div>
+        </div>
+    </div>
+
+  </main>
+
+  <script src="db.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const diseasesList = document.getElementById('diseasesList');
+        const cameraInput = document.getElementById('cameraInput');
+        const uploadFeedback = document.getElementById('uploadFeedback');
+        const treatmentModal = document.getElementById('treatmentModal');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const understoodBtn = document.getElementById('understoodBtn');
+
+        // Simulate camera upload
+        cameraInput.addEventListener('change', (e) => {
+            if(e.target.files.length > 0) {
+                uploadFeedback.classList.remove('hidden');
+                setTimeout(() => {
+                    uploadFeedback.innerHTML = "<i class='fas fa-check-circle'></i> Image analysée ! Sélectionnez le symptôme le plus proche.";
+                }, 2000);
+            }
+        });
+
+        // Render Diseases
+        if(typeof DB !== 'undefined' && DB.maladies) {
+            DB.maladies.forEach((maladie, index) => {
+                const card = document.createElement('div');
+                card.className = "disease-card bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden cursor-pointer hover:shadow-md transition flex items-center";
+                card.innerHTML = `
+                    <div class="w-24 h-24 bg-gray-200 flex-shrink-0 bg-cover bg-center" style="background-image: url('${maladie.image}')"></div>
+                    <div class="p-4">
+                        <h4 class="font-bold text-gray-800 text-lg">${maladie.nom}</h4>
+                        <p class="text-gray-500 text-sm line-clamp-2">${maladie.symptome}</p>
+                    </div>
+                `;
+                
+                card.addEventListener('click', () => {
+                    document.querySelectorAll('.disease-card').forEach(c => c.classList.remove('selected'));
+                    card.classList.add('selected');
+                    showTreatment(maladie);
+                });
+
+                diseasesList.appendChild(card);
+            });
+        }
+
+        // Modal Logic
+        function showTreatment(maladie) {
+            document.getElementById('modalTitle').innerText = maladie.nom;
+            document.getElementById('modalSymptoms').innerText = maladie.symptome;
+            document.getElementById('modalBio').innerText = maladie.traitement_bio;
+            document.getElementById('modalChem').innerText = maladie.traitement_chimique;
+            treatmentModal.classList.remove('hidden');
+        }
+
+        function closeModal() {
+            treatmentModal.classList.add('hidden');
+        }
+
+        closeModalBtn.addEventListener('click', closeModal);
+        understoodBtn.addEventListener('click', closeModal);
+        
+        treatmentModal.addEventListener('click', (e) => {
+            if(e.target === treatmentModal) closeModal();
+        });
+    });
+  </script>
+</body>
+</html>

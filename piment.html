@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guide Culture - Piment (Habanero/Bec d'oiseau)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { theme: { extend: { colors: { brand: '#16a34a', bgLight: '#f0fdf4' } } } }
+  </script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    body { font-family: 'Segoe UI', system-ui, sans-serif; }
+    .timeline-container { position: relative; padding-left: 30px; margin-top: 20px; }
+    .timeline-container::before { content: ''; position: absolute; left: 11px; top: 0; height: 100%; width: 4px; background: #bbf7d0; border-radius: 4px; }
+    .timeline-item { position: relative; margin-bottom: 25px; }
+    .timeline-dot { position: absolute; left: -30px; top: 4px; width: 24px; height: 24px; background: #16a34a; border: 4px solid #f0fdf4; border-radius: 50%; z-index: 10; }
+    /* Styles pour l'ancien contenu */
+    .old-content .big-card { background: white; border-radius: 0.75rem; padding: 1.25rem; margin-bottom: 1.5rem; box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05); border: 1px solid #dcfce7; }
+    .old-content h2.card-title { color: #166534; font-size: 1.25rem; font-weight: 700; margin-bottom: 1rem; border-bottom: 2px solid #bbf7d0; padding-bottom: 0.5rem; }
+    .old-content h3 { color: #15803d; font-weight: 600; margin-top: 1rem; margin-bottom: 0.5rem; }
+    .old-content p { color: #4b5563; font-size: 0.875rem; margin-bottom: 0.5rem; }
+    .old-content ul { list-style-type: disc; margin-left: 1.25rem; color: #4b5563; font-size: 0.875rem; margin-bottom: 1rem; }
+    .old-content li { margin-bottom: 0.25rem; }
+  </style>
+</head>
+<body class="bg-bgLight text-gray-800 flex flex-col min-h-screen">
+
+  <header class="bg-brand text-white shadow-md sticky top-0 z-50">
+    <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+      <div class="flex items-center gap-3">
+        <a href="index.html" class="text-white text-xl hover:text-green-200"><i class="fas fa-arrow-left"></i> Retour Accueil</a>
+        <h1 class="text-xl font-bold leading-tight">Guide : Piment (Habanero/Bec d'oiseau)</h1>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-grow container mx-auto px-4 py-6 max-w-3xl">
+    <!-- Hero Image -->
+    <div class="w-full h-48 rounded-2xl bg-cover bg-center mb-4 shadow-md relative overflow-hidden" style="background-image: url('piment.jpg');">
+        <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end">
+            <h2 class="text-3xl font-bold text-white p-5">Piment (Habanero/Bec d'oiseau)</h2>
+        </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="flex flex-col sm:flex-row gap-3 mb-6">
+        <button id="btnShare" class="flex-1 bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold py-3 px-4 rounded-xl shadow transition flex justify-center items-center gap-2">
+            <i class="fab fa-whatsapp text-xl"></i> Partager sur WhatsApp
+        </button>
+        <button id="btnPDF" class="flex-1 bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 px-4 rounded-xl shadow transition flex justify-center items-center gap-2">
+            <i class="fas fa-download text-xl"></i> Télécharger en PDF
+        </button>
+    </div>
+
+    <!-- Fiche technique -->
+    <div class="bg-white rounded-xl shadow-sm border border-green-100 p-5 mb-6">
+        <h3 class="text-lg font-bold text-brand mb-3 border-b pb-2"><i class="fas fa-info-circle"></i> Fiche d'identité</h3>
+        <div class="grid grid-cols-2 gap-4 text-sm">
+            <div><span class="text-gray-500 block">Saison idéale</span> <span class="font-semibold text-gray-800">Toute l'année (avec irrigation)</span></div>
+            <div><span class="text-gray-500 block">Cycle moyen</span> <span class="font-semibold text-gray-800">120 jours</span></div>
+            <div><span class="text-gray-500 block">Rendement estimé</span> <span class="font-semibold text-gray-800">5 à 10 tonnes/ha</span></div>
+            <div><span class="text-gray-500 block">Zone adaptée</span> <span class="font-semibold text-gray-800">Sud, Centre</span></div>
+        </div>
+    </div>
+
+    <!-- Budget -->
+    <div class="bg-green-50 rounded-xl shadow-sm border border-green-200 p-5 mb-6">
+        <h3 class="text-lg font-bold text-green-900 mb-3"><i class="fas fa-wallet"></i> Budget estimatif (par Hectare)</h3>
+        <ul class="space-y-2 text-sm">
+            <li class="flex justify-between border-b border-green-200 pb-1">
+                <span class="text-gray-700">Intrants :</span> <span class="font-bold text-red-600">250 000 FCFA/ha</span>
+            </li>
+            <li class="flex justify-between border-b border-green-200 pb-1">
+                <span class="text-gray-700">Main d'œuvre :</span> <span class="font-bold text-red-600">200 000 FCFA/ha</span>
+            </li>
+            <li class="flex justify-between pt-1">
+                <span class="text-green-900 font-bold">Revenu estimé :</span> <span class="font-bold text-green-700">1 200 000 FCFA/ha</span>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Maladies fréquentes -->
+    <div class="bg-white rounded-xl shadow-sm border border-red-100 p-5 mb-6">
+        <h3 class="text-lg font-bold text-red-700 mb-3"><i class="fas fa-exclamation-triangle"></i> Principaux Ennemis</h3>
+        <div><span class="bg-red-100 text-red-800 text-xs px-2 py-1 rounded border border-red-200 mr-2 mb-2 inline-block"><i class="fas fa-bug"></i> Flétrissement bactérien</span><span class="bg-red-100 text-red-800 text-xs px-2 py-1 rounded border border-red-200 mr-2 mb-2 inline-block"><i class="fas fa-bug"></i> Anthracnose</span></div>
+    </div>
+
+    <!-- Itinéraire Technique / Timeline -->
+    <div class="mb-10">
+        <h3 class="text-xl font-bold text-brand mb-4 flex items-center gap-2"><i class="fas fa-route"></i> Itinéraire Technique A à Z</h3>
+        <div class="timeline-container">
+            
+      <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="bg-white p-4 rounded-xl shadow-sm border border-green-50">
+              <span class="text-xs font-bold text-brand bg-green-50 px-2 py-1 rounded inline-block mb-2">Semaine 1-4</span>
+              <h4 class="font-bold text-gray-800 text-lg mb-1">Pépinière</h4>
+              <p class="text-gray-600 text-sm">Semis sur planche ombragée. Arrosage régulier.</p>
+          </div>
+      </div>
+    
+      <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="bg-white p-4 rounded-xl shadow-sm border border-green-50">
+              <span class="text-xs font-bold text-brand bg-green-50 px-2 py-1 rounded inline-block mb-2">Semaine 5</span>
+              <h4 class="font-bold text-gray-800 text-lg mb-1">Repiquage</h4>
+              <p class="text-gray-600 text-sm">Mise en terre au champ (densité 80x80 cm).</p>
+          </div>
+      </div>
+    
+      <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="bg-white p-4 rounded-xl shadow-sm border border-green-50">
+              <span class="text-xs font-bold text-brand bg-green-50 px-2 py-1 rounded inline-block mb-2">Semaine 8</span>
+              <h4 class="font-bold text-gray-800 text-lg mb-1">Sarclage & Fumure</h4>
+              <p class="text-gray-600 text-sm">Apport de NPK et nettoyage des adventices.</p>
+          </div>
+      </div>
+    
+      <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="bg-white p-4 rounded-xl shadow-sm border border-green-50">
+              <span class="text-xs font-bold text-brand bg-green-50 px-2 py-1 rounded inline-block mb-2">Semaine 12</span>
+              <h4 class="font-bold text-gray-800 text-lg mb-1">Floraison</h4>
+              <p class="text-gray-600 text-sm">Arrosage strict pour éviter la chute des fleurs.</p>
+          </div>
+      </div>
+    
+      <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="bg-white p-4 rounded-xl shadow-sm border border-green-50">
+              <span class="text-xs font-bold text-brand bg-green-50 px-2 py-1 rounded inline-block mb-2">Semaine 16+</span>
+              <h4 class="font-bold text-gray-800 text-lg mb-1">Récolte</h4>
+              <p class="text-gray-600 text-sm">Récolte des piments verts ou rouges (selon variété et marché).</p>
+          </div>
+      </div>
+    
+        </div>
+    </div>
+    
+    <div class="text-center pb-8">
+        <a href="carnet.html?culture=piment" class="bg-brand text-white font-bold py-3 px-8 rounded-full shadow-lg hover:bg-green-700 transition inline-block">
+            <i class="fas fa-plus-circle"></i> Ajouter à mon Carnet
+        </a>
+    </div>
+
+    <!-- ANCIEN CONTENU RESTAURÉ (Détails approfondis) -->
+    <div class="old-content mt-8">
+        <h3 class="text-2xl font-bold text-green-800 mb-4 border-b-2 border-green-300 pb-2">Détails et Astuces (Archive)</h3>
+        
+
+
+
+<header>Culture du Piment</header>
+
+<div class="search-box">
+
+<button>🔍</button>
+</div>
+
+<div class="horizontal-scroll">
+
+<div class="big-card">
+<h2 class="card-title">📘 Description Générale</h2>
+<div class="card-content">
+<ul>
+<li>🌍 Origine : Amérique centrale et Mexique.</li>
+<li>🥬 Famille : Solanacées.</li>
+<li>🌱 Plante annuelle ou vivace selon climat.</li>
+<li>🌶️ Fruit piquant, riche en vitamine C et caroténoïdes.</li>
+<li>💰 Culture rentable en maraîchage.</li>
+<li>🌡️ Température idéale : 20–30°C.</li>
+<li>🌱 Sol : léger, fertile, bien drainé, pH 6–7.</li>
+</ul>
+</div>
+</div>
+
+<div class="big-card">
+<h2 class="card-title">🌱 Itinéraire Technique</h2>
+<div class="card-content">
+<h3>1. Préparation du sol</h3>
+<ul>
+<li>Labour et amendement organique 2–3 semaines avant semis.</li>
+</ul>
+<h3>2. Semis & Repiquage</h3>
+<ul>
+<li>Semis en pépinière ou mini-serre.</li>
+<li>Repiquage à 4–6 semaines.</li>
+<li>Espacement : 60 x 40 cm (ligne x plant).</li>
+</ul>
+<h3>3. Entretien</h3>
+<ul>
+<li>Tuteurage léger pour variétés indéterminées.</li>
+<li>Arrosage régulier mais sans excès.</li>
+<li>Désherbage manuel ou paillage.</li>
+</ul>
+<h3>4. Fertilisation</h3>
+<ul>
+<li>Apports N-P-K 2–3 fois par cycle.</li>
+<li>Calcium et magnésium si carences visibles.</li>
+</ul>
+<h3>5. Récolte</h3>
+<ul>
+<li>70–90 jours après repiquage.</li>
+<li>Récolte manuelle quand les fruits sont rouges ou verts selon usage.</li>
+</ul>
+</div>
+</div>
+
+<div class="big-card">
+<h2 class="card-title">⏳ Cycle & Durée</h2>
+<div class="card-content">
+<ul>
+<li>🌱 Germination : 7–14 jours.</li>
+<li>🌿 Croissance végétative : 30–40 jours.</li>
+<li>🌸 Floraison : 30–45 jours.</li>
+<li>🌶️ Récolte : 70–90 jours.</li>
+</ul>
+</div>
+</div>
+
+<div class="big-card">
+<h2 class="card-title">⚠️ Maladies & Ravageurs</h2>
+<div class="card-content">
+<h3>🍄 Maladies</h3>
+<p><strong>Mildiou (Phytophthora capsici)</strong></p>
+<ul>
+<li>Signes : Feuilles tachées, fruits pourris, croissance ralentie.</li>
+</ul>
+<p><strong>Fusariose (Fusarium oxysporum)</strong></p>
+<ul>
+<li>Signes : Jaunissement des feuilles, flétrissement, mort progressive.</li>
+</ul>
+
+<h3>🦟 Ravageurs</h3>
+<p><strong>Pucerons (Aphis spp.)</strong></p>
+<ul>
+<li>Signes : Feuilles enroulées, miellat, fourmis.</li>
+</ul>
+<p><strong>Thrips (Thrips tabaci)</strong></p>
+<ul>
+<li>Signes : Petites taches argentées, déformation des jeunes feuilles.</li>
+</ul>
+<p><strong>Chenilles (Helicoverpa spp.)</strong></p>
+<ul>
+<li>Signes : Feuilles et fruits rongés, larves visibles.</li>
+</ul>
+</div>
+</div>
+
+<div class="big-card">
+<h2 class="card-title">💡 Bonnes Pratiques</h2>
+<div class="card-content">
+<ul>
+<li>Rotation culturale 2–3 ans.</li>
+<li>Paillage pour conserver l’humidité.</li>
+<li>Élimination des plantes malades.</li>
+<li>Surveillance régulière des ravageurs.</li>
+<li>Traitement biologique ou chimique si nécessaire.</li>
+</ul>
+</div>
+</div>
+
+</div>
+
+
+    </div>
+  </main>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('btnShare').addEventListener('click', () => {
+          let msg = "🌱 Guide Piment (Habanero/Bec d'oiseau) A à Z\nSaison: Toute l'année (avec irrigation) | Durée: 120 jours\n";
+          msg += "Étape 1: Pépinière\n";
+          msg += "Étape 2: Repiquage\n";
+          msg += "Voir le guide complet: " + window.location.href;
+          window.open("https://wa.me/?text=" + encodeURIComponent(msg), '_blank');
+      });
+
+      document.getElementById('btnPDF').addEventListener('click', () => {
+          const { jsPDF } = window.jspdf;
+          const doc = new jsPDF();
+          let yPos = 20;
+          doc.setFontSize(22); doc.setTextColor(22, 163, 74);
+          doc.text("Guide Culture : Piment (Habanero/Bec d'oiseau)", 20, yPos); yPos += 10;
+          doc.setFontSize(12); doc.setTextColor(50, 50, 50);
+          doc.text("Saison : Toute l'année (avec irrigation) | Duree : 120 jours", 20, yPos); yPos += 15;
+          doc.setFontSize(16); doc.setTextColor(0, 0, 0);
+          doc.text("Budget estimatif (par Ha)", 20, yPos); yPos += 8;
+          doc.setFontSize(12);
+          doc.text("- Intrants : 250 000 FCFA/ha", 25, yPos); yPos += 6;
+          doc.text("- Main d'oeuvre : 200 000 FCFA/ha", 25, yPos); yPos += 6;
+          doc.text("- Revenu estime : 1 200 000 FCFA/ha", 25, yPos); yPos += 15;
+          doc.setFontSize(16); doc.text("Itineraire Technique", 20, yPos); yPos += 10;
+          doc.setFontSize(11);
+          const etapesArr = [{"titre":"Pépinière","description":"Semis sur planche ombragée. Arrosage régulier.","semaine":"Semaine 1-4"},{"titre":"Repiquage","description":"Mise en terre au champ (densité 80x80 cm).","semaine":"Semaine 5"},{"titre":"Sarclage & Fumure","description":"Apport de NPK et nettoyage des adventices.","semaine":"Semaine 8"},{"titre":"Floraison","description":"Arrosage strict pour éviter la chute des fleurs.","semaine":"Semaine 12"},{"titre":"Récolte","description":"Récolte des piments verts ou rouges (selon variété et marché).","semaine":"Semaine 16+"}];
+          etapesArr.forEach((etape) => {
+              if (yPos > 270) { doc.addPage(); yPos = 20; }
+              doc.setFont("helvetica", "bold"); doc.text("[" + etape.semaine + "] " + etape.titre, 20, yPos); yPos += 6;
+              doc.setFont("helvetica", "normal");
+              const splitDesc = doc.splitTextToSize(etape.description, 170);
+              doc.text(splitDesc, 20, yPos);
+              yPos += (splitDesc.length * 6) + 6;
+          });
+          doc.save("Guide-Piment (Habanero/Bec d'oiseau).pdf");
+      });
+    });
+  </script>
+</body>
+</html>
