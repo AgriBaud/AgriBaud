@@ -5,35 +5,56 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AgriBaud+ - Plateforme Agricole</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  
   <script>
     tailwind.config = {
-      theme: {
-        extend: {
-          colors: { brand: '#16a34a', bgLight: '#f0fdf4' }
-        }
-      }
+      darkMode: 'class',
+      theme: { extend: { colors: { brand: '#16a34a', bgLight: '#f0fdf4', bgDark: '#0f172a', cardDark: '#1e293b' } } }
     }
   </script>
+
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
-    body { font-family: 'Segoe UI', system-ui, sans-serif; background-color: #f0fdf4; }
-    /* Styles pour les boutons de filtres actifs/inactifs */
-    .btn-filtre {
-      border: 2px solid #16a34a;
-      color: #16a34a;
-      background-color: white;
-      transition: all 0.2s ease;
-    }
-    .btn-filtre:hover { background-color: #dcfce7; }
-    .btn-filtre.actif { background-color: #166534; color: white; border-color: #166534; }
+  
+  <style> 
+    body { font-family: 'Segoe UI', system-ui, sans-serif; } 
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    .animate-fade-in-up { animation: fadeInUp 0.5s ease-out forwards; }
+    /* Hide scrollbar for a cleaner look */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    .dark ::-webkit-scrollbar-thumb { background: #334155; }
   </style>
+
+
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#16a34a">
+  <script>
+    // Dark mode check
+    if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+    function toggleDarkMode() {
+      document.documentElement.classList.toggle('dark');
+      localStorage.theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+    }
+    // Register Service Worker for PWA
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js');
+      });
+    }
+  </script>
+
 </head>
-<body class="bg-bgLight text-gray-800 flex flex-col min-h-screen">
+<body class="bg-bgLight text-gray-800 dark:bg-bgDark dark:text-gray-200 transition-colors duration-300 flex flex-col min-h-screen">
 
   <header class="bg-brand text-white shadow-md sticky top-0 z-50">
     <div class="container mx-auto px-4 py-3 flex justify-between items-center">
       <div class="flex items-center gap-2">
-        <img src="LOGO.jpeg" alt="Logo AgriBaud+" class="h-10 w-10 rounded-full bg-white object-cover border-2 border-white shadow-sm">
+        <img src="LOGO.jpeg" alt="Logo AgriBaud+" class="h-10 w-10 rounded-full bg-white dark:bg-cardDark dark:border-gray-700 object-cover border-2 border-white shadow-sm">
         <h1 class="text-xl font-bold leading-tight">AgriBaud+<br><span class="text-xs font-normal">Le standard agricole</span></h1>
       </div>
       <button id="mobileMenuBtn" class="md:hidden text-white text-2xl"><i class="fas fa-bars"></i></button>
@@ -56,13 +77,13 @@
 
   <main class="flex-grow">
     <section class="container mx-auto px-4 py-8">
-      <div class="bg-white rounded-2xl shadow-xl overflow-hidden mb-10 border border-green-100">
+      <div class="bg-white dark:bg-cardDark dark:border-gray-700 rounded-2xl shadow-xl overflow-hidden mb-10 border border-green-100">
         <div class="bg-brand p-8 text-center text-white relative" style="background-image: url('tomate.jpg'); background-size: cover; background-position: center; background-blend-mode: overlay; background-color: rgba(22, 163, 74, 0.85);">
           <h2 class="text-3xl font-bold mb-4">Optimisez vos récoltes au Bénin (V1.3)</h2>
           <p class="text-lg mb-8 max-w-2xl mx-auto">Toutes vos cultures classées par catégories pour une meilleure visibilité.</p>
           
           <div class="flex flex-col sm:flex-row justify-center gap-4">
-            <a href="#cultures" class="bg-white text-brand font-bold py-3 px-6 rounded-full shadow-lg hover:bg-green-50 transition flex items-center justify-center gap-2 text-lg">
+            <a href="#cultures" class="bg-white dark:bg-cardDark dark:border-gray-700 text-brand font-bold py-3 px-6 rounded-full shadow-lg hover:bg-green-50 transition flex items-center justify-center gap-2 text-lg">
               <i class="fas fa-search"></i> Parcourir le catalogue
             </a>
             <a href="diagnostic.html" class="bg-yellow-500 text-white font-bold py-3 px-6 rounded-full shadow-lg hover:bg-yellow-400 transition flex items-center justify-center gap-2 text-lg">

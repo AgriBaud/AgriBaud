@@ -1,22 +1,15 @@
 {
-  "name": "JardinExpress - Assistant Agricole Intelligent",
-  "short_name": "JardinExpress",
-  "description": "Plateforme intelligente de planification de jardin potager tropical, diagnostic IA et suivi des cultures au Bénin.",
-  "start_url": "index.html",
+  "name": "AgriBaud+",
+  "short_name": "AgriBaud+",
+  "description": "Le standard agricole de suivi des parcelles.",
+  "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#2e7d32",
-  "theme_color": "#4CAF50",
-  "orientation": "portrait-primary",
+  "background_color": "#f0fdf4",
+  "theme_color": "#16a34a",
   "icons": [
     {
-      "src": "logo.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "logo-jardin.jpg",
-      "sizes": "512x512",
+      "src": "LOGO.jpeg",
+      "sizes": "192x192 512x512",
       "type": "image/jpeg"
     }
   ]
