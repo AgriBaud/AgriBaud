@@ -1,799 +1,790 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mon Carnet - AgriBaud+</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: { extend: { colors: { brand: '#16a34a', bgLight: '#f0fdf4', bgDark: '#0f172a', cardDark: '#1e293b' } } }
-    }
-  </script>
+ <meta charset="UTF-8">
+ <meta name="viewport"content="width=device-width, initial-scale=1.0">
+ <title>Mon Carnet - AgriBaud+</title>
+ <script src="https://cdn.tailwindcss.com"></script>
+ 
+ <script>
+ tailwind.config = {
+ 
+ theme: { extend: { colors: { brand: '#16a34a', bgLight: '#f0fdf4', bgDark: '#0f172a', cardDark: '#1e293b' } } }
+ }
+ </script>
 
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
-  <style> 
-    body { font-family: 'Segoe UI', system-ui, sans-serif; } 
-    @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-    .animate-fade-in-up { animation: fadeInUp 0.5s ease-out forwards; }
-    /* Hide scrollbar for a cleaner look */
-    ::-webkit-scrollbar { width: 8px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-    .dark ::-webkit-scrollbar-thumb { background: #334155; }
-  </style>
-
-
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+ <link rel="stylesheet"href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+ 
+ <style> 
+ body { font-family: 'Segoe UI', system-ui, sans-serif; } 
+ @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+ .animate-fade-in-up { animation: fadeInUp 0.5s ease-out forwards; }
+ /* Hide scrollbar for a cleaner look */
+ ::-webkit-scrollbar { width: 8px; }
+ ::-webkit-scrollbar-track { background: transparent; }
+ ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+ .dark ::-webkit-scrollbar-thumb { background: #334155; }
+ </style>
 
 
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#16a34a">
-  <script>
-    // Dark mode check
-    if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-    function toggleDarkMode() {
-      document.documentElement.classList.toggle('dark');
-      localStorage.theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
-    }
-    // Register Service Worker for PWA
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js');
-      });
-    }
-  </script>
+ <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+
+
+ <link rel="manifest"href="manifest.json">
+ <meta name="theme-color"content="#16a34a">
+ <script>
+ 
+ // Register Service Worker for PWA
+ if ('serviceWorker' in navigator) {
+ window.addEventListener('load', () => {
+ navigator.serviceWorker.register('sw.js');
+ });
+ }
+ </script>
 
 </head>
-<body class="bg-bgLight text-gray-800 dark:text-gray-100 dark:bg-bgDark dark:text-gray-200 transition-colors duration-300 flex flex-col min-h-screen">
+<body class="bg-bgLight text-gray-800 transition-colors duration-300 flex flex-col min-h-screen">
 
-  <header class="bg-brand text-white shadow-md sticky top-0 z-50">
-    <div class="container mx-auto px-4 py-3 flex justify-between items-center">
-      <div class="flex items-center gap-3">
-        <a href="index.html" class="text-white text-xl hover:text-green-200"><i class="fas fa-arrow-left"></i></a>
-        <img src="LOGO.jpeg" alt="Logo AgriBaud+" class="h-10 w-10 rounded-full bg-white object-cover border-2 border-white shadow-sm">
-        <h1 class="text-xl font-bold leading-tight">Mon Carnet</h1>
-      </div>
-    </div>
-  </header>
+ <header class="bg-brand text-white shadow-md sticky top-0 z-50">
+ <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+ <div class="flex items-center gap-3">
+ <a href="index.html"class="text-white text-xl hover:text-green-200"><i class="fas fa-arrow-left"></i></a>
+ <img src="LOGO.jpeg"alt="Logo AgriBaud+"class="h-10 w-10 rounded-full bg-white object-cover border-2 border-white shadow-sm">
+ <h1 class="text-xl font-bold leading-tight">Mon Carnet</h1>
+ </div>
+ </div>
+ </header>
 
-  <main class="flex-grow container mx-auto px-4 py-6 max-w-4xl">
-    
-    <!-- User summary -->
-    <div class="flex items-center justify-between mb-8 bg-white p-4 rounded-xl shadow-sm border border-green-100">
-        <div class="flex items-center gap-4">
-            <div class="w-12 h-12 bg-green-100 text-brand rounded-full flex items-center justify-center text-2xl">
-                <i class="fas fa-user-circle"></i>
-            </div>
-            <div>
-                <h2 class="font-bold text-gray-800 dark:text-gray-100">Compte Local</h2>
-                <p class="text-sm text-gray-500">Agriculteur Bénin</p>
-            </div>
-        </div>
-        <button id="addPlotBtn" class="bg-brand text-white px-4 py-2 rounded-full text-sm font-bold shadow hover:bg-green-700">
-            <i class="fas fa-plus"></i> Nouvelle Parcelle
-        </button>
-    </div>
+ <main class="flex-grow container mx-auto px-4 py-6 max-w-4xl">
+ 
+ <!-- User summary -->
+ <div class="flex items-center justify-between mb-8 bg-white p-4 rounded-xl shadow-sm border border-green-100">
+ <div class="flex items-center gap-4">
+ <div class="w-12 h-12 bg-green-100 text-brand rounded-full flex items-center justify-center text-2xl">
+ <i class="fas fa-user-circle"></i>
+ </div>
+ <div>
+ <h2 class="font-bold text-gray-800">Compte Local</h2>
+ <p class="text-sm text-gray-500">Agriculteur Bénin</p>
+ </div>
+ </div>
+ <button id="addPlotBtn"class="bg-brand text-white px-4 py-2 rounded-full text-sm font-bold shadow hover:bg-green-700">
+ <i class="fas fa-plus"></i> Nouvelle Parcelle
+ </button>
+ </div>
 
-    
-    
-    <!-- MODULE MÉTÉO (Option B) -->
-    <div id="weatherWidget" class="hidden mb-8 bg-gradient-to-r from-blue-500 to-blue-700 dark:from-blue-800 dark:to-gray-900 text-white p-5 rounded-xl shadow-lg flex justify-between items-center animate-fade-in-up">
-        <div class="flex items-center gap-4">
-            <div class="text-4xl"><i id="weatherIcon" class="fas fa-sun animate-pulse"></i></div>
-            <div>
-                <h3 class="font-bold text-lg">Météo aux champs</h3>
-                <p id="weatherDesc" class="text-blue-100 text-sm">Chargement en cours...</p>
-            </div>
-        </div>
-        <div class="text-right">
-            <div id="weatherTemp" class="text-3xl font-extrabold">--°C</div>
-            <div id="weatherDetails" class="text-sm text-blue-100">Vent: -- km/h</div>
-        </div>
-    </div>
+ 
+ 
+ <!-- MODULE MÉTÉO (Option B) -->
+ <div id="weatherWidget"class="hidden mb-8 bg-gradient-to-r from-blue-500 to-blue-700 text-white p-5 rounded-xl shadow-lg flex justify-between items-center animate-fade-in-up">
+ <div class="flex items-center gap-4">
+ <div class="text-4xl"><i id="weatherIcon"class="fas fa-sun animate-pulse"></i></div>
+ <div>
+ <h3 class="font-bold text-lg">Météo aux champs</h3>
+ <p id="weatherDesc"class="text-blue-100 text-sm">Chargement en cours...</p>
+ </div>
+ </div>
+ <div class="text-right">
+ <div id="weatherTemp"class="text-3xl font-extrabold">--°C</div>
+ <div id="weatherDetails"class="text-sm text-blue-100">Vent: -- km/h</div>
+ </div>
+ </div>
 
-      <!-- MODULE 4 : STATS -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-        <div class="bg-white dark:bg-cardDark dark:border-gray-700 p-4 rounded-xl shadow-sm border border-green-100 dark:border-gray-700 animate-fade-in-up hover:shadow-md transition-all duration-300">
-            <h4 class="font-bold text-gray-700 dark:text-gray-200 mb-2 text-center text-sm">Répartition des Cultures</h4>
-            <div class="relative h-48 w-full"><canvas id="chartCultures"></canvas></div>
-        </div>
-        <div class="bg-white dark:bg-cardDark dark:border-gray-700 p-4 rounded-xl shadow-sm border border-green-100 dark:border-gray-700 animate-fade-in-up hover:shadow-md transition-all duration-300">
-            <h4 class="font-bold text-gray-700 dark:text-gray-200 mb-2 text-center text-sm">Bilan Financier Global (FCFA)</h4>
-            <div class="relative h-48 w-full"><canvas id="chartFinances"></canvas></div>
-        </div>
-    </div>
+ <!-- MODULE 4 : STATS -->
+ <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+ <div class="bg-white p-4 rounded-xl shadow-sm border border-green-100 animate-fade-in-up hover:shadow-md transition-all duration-300">
+ <h4 class="font-bold text-gray-700 mb-2 text-center text-sm">Répartition des Cultures</h4>
+ <div class="relative h-48 w-full"><canvas id="chartCultures"></canvas></div>
+ </div>
+ <div class="bg-white p-4 rounded-xl shadow-sm border border-green-100 animate-fade-in-up hover:shadow-md transition-all duration-300">
+ <h4 class="font-bold text-gray-700 mb-2 text-center text-sm">Bilan Financier Global (FCFA)</h4>
+ <div class="relative h-48 w-full"><canvas id="chartFinances"></canvas></div>
+ </div>
+ </div>
 
-    <!-- Dashboard -->
-    <h3 class="text-xl font-bold text-gray-800 dark:text-gray-100 mb-4 border-b border-gray-200 pb-2">Mes Parcelles Actives</h3>
-    <div id="plotsList" class="grid gap-4 mb-8">
-        <!-- Injected via JS -->
-    </div>
+ <!-- Dashboard -->
+ <h3 class="text-xl font-bold text-gray-800 mb-4 border-b border-gray-200 pb-2">Mes Parcelles Actives</h3>
+ <div id="plotsList"class="grid gap-4 mb-8">
+ <!-- Injected via JS -->
+ </div>
 
-    
-    <section class="bg-white p-6 rounded-lg shadow mt-8 mb-8 border border-green-100">
-      <h2 class="text-2xl font-bold text-[#16a34a] mb-4"><i class="fas fa-calendar-alt"></i> Mon Calendrier de Suivi</h2>
-      
-      <div class="flex justify-between items-center mb-4">
-        <button id="btnMoisPrec" class="text-[#16a34a] font-bold px-3 py-1 bg-green-50 rounded-full hover:bg-green-100 transition"><i class="fas fa-chevron-left"></i> Précédent</button>
-        <span id="moisAnneeAffiche" class="font-bold text-gray-700 dark:text-gray-200 text-lg uppercase tracking-wide"></span>
-        <button id="btnMoisSuiv" class="text-[#16a34a] font-bold px-3 py-1 bg-green-50 rounded-full hover:bg-green-100 transition">Suivant <i class="fas fa-chevron-right"></i></button>
-      </div>
+ 
+ <section class="bg-white p-6 rounded-lg shadow mt-8 mb-8 border border-green-100">
+ <h2 class="text-2xl font-bold text-[#16a34a] mb-4"><i class="fas fa-calendar-alt"></i> Mon Calendrier de Suivi</h2>
+ 
+ <div class="flex justify-between items-center mb-4">
+ <button id="btnMoisPrec"class="text-[#16a34a] font-bold px-3 py-1 bg-green-50 rounded-full hover:bg-green-100 transition"><i class="fas fa-chevron-left"></i> Précédent</button>
+ <span id="moisAnneeAffiche"class="font-bold text-gray-700 text-lg uppercase tracking-wide"></span>
+ <button id="btnMoisSuiv"class="text-[#16a34a] font-bold px-3 py-1 bg-green-50 rounded-full hover:bg-green-100 transition">Suivant <i class="fas fa-chevron-right"></i></button>
+ </div>
 
-      <!-- Noms des jours de la semaine -->
-      <div class="grid grid-cols-7 gap-2 mb-2 text-center font-bold text-gray-400 text-xs">
-        <div>LUN</div><div>MAR</div><div>MER</div><div>JEU</div><div>VEN</div><div>SAM</div><div>DIM</div>
-      </div>
-      
-      <div id="calendrier" class="grid grid-cols-7 gap-2"></div>
-      
-      <p class="text-sm text-gray-500 mt-4 flex items-center gap-2">
-         <span class="w-3 h-3 rounded-full bg-[#f0fdf4] border border-[#16a34a] inline-block"></span> 
-         Les jours avec tâches sont en vert. Cliquez pour voir le détail.
-      </p>
-    </section>
+ <!-- Noms des jours de la semaine -->
+ <div class="grid grid-cols-7 gap-2 mb-2 text-center font-bold text-gray-400 text-xs">
+ <div>LUN</div><div>MAR</div><div>MER</div><div>JEU</div><div>VEN</div><div>SAM</div><div>DIM</div>
+ </div>
+ 
+ <div id="calendrier"class="grid grid-cols-7 gap-2"></div>
+ 
+ <p class="text-sm text-gray-500 mt-4 flex items-center gap-2">
+ <span class="w-3 h-3 rounded-full bg-[#f0fdf4] border border-[#16a34a] inline-block"></span> 
+ Les jours avec tâches sont en vert. Cliquez pour voir le détail.
+ </p>
+ </section>
 
-    <!-- POPUP MODALE -->
-    <div id="popupTache" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[100] p-4 transition-opacity">
-      <div class="bg-white dark:bg-cardDark p-6 rounded-2xl border dark:border-gray-700 max-w-md w-full shadow-2xl transform transition-all">
-        <h3 id="popupDate" class="font-bold text-xl text-green-800 mb-3 border-b pb-2"></h3>
-        <div id="popupContenu" class="space-y-3 mb-4 max-h-64 overflow-y-auto pr-2"></div>
-        <button onclick="fermerPopup()" class="w-full bg-[#16a34a] hover:bg-green-700 text-white font-bold px-4 py-3 rounded-xl transition shadow">Fermer</button>
-      </div>
-    </div>
+ <!-- POPUP MODALE -->
+ <div id="popupTache"class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[100] p-4 transition-opacity">
+ <div class="bg-white p-6 rounded-2xl border max-w-md w-full shadow-2xl transform transition-all">
+ <h3 id="popupDate"class="font-bold text-xl text-green-800 mb-3 border-b pb-2"></h3>
+ <div id="popupContenu"class="space-y-3 mb-4 max-h-64 overflow-y-auto pr-2"></div>
+ <button onclick="fermerPopup()"class="w-full bg-[#16a34a] hover:bg-green-700 text-white font-bold px-4 py-3 rounded-xl transition shadow">Fermer</button>
+ </div>
+ </div>
 
-    <!-- Reminders -->
-    <h3 class="text-xl font-bold text-gray-800 dark:text-gray-100 mb-4 border-b border-gray-200 pb-2 text-yellow-600"><i class="fas fa-bell"></i> Rappels & Tâches à venir</h3>
-    <div id="remindersList" class="grid gap-3">
-        <!-- Injected via JS -->
-    </div>
+ <!-- Reminders -->
+ <h3 class="text-xl font-bold text-gray-800 mb-4 border-b border-gray-200 pb-2 text-yellow-600"><i class="fas fa-bell"></i> Rappels & Tâches à venir</h3>
+ <div id="remindersList"class="grid gap-3">
+ <!-- Injected via JS -->
+ </div>
 
-  </main>
+ </main>
 
-  <!-- Add Plot Modal -->
-  <div id="addPlotModal" class="hidden fixed inset-0 bg-black/60 z-[100] flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
-        <div class="bg-brand text-white p-4 flex justify-between items-center">
-            <h3 class="font-bold text-lg">Ajouter une parcelle</h3>
-            <button id="closePlotModalBtn" class="text-white text-2xl hover:text-green-200">&times;</button>
-        </div>
-        <form id="addPlotForm" class="p-5">
-            <div class="mb-4">
-                <label class="block text-sm font-bold text-gray-700 dark:text-gray-200 mb-1">Culture</label>
-                <select id="plotCulture" required class="w-full border border-gray-300 p-2 rounded focus:ring-brand focus:border-brand">
-                    <!-- Options injected via JS -->
-                </select>
-            </div>
-            <div class="mb-4">
-                <label class="block text-sm font-bold text-gray-700 dark:text-gray-200 mb-1">Date de semis / plantation</label>
-                <input type="date" id="plotDate" required class="w-full border border-gray-300 p-2 rounded focus:ring-brand">
-            </div>
-            <div class="mb-4 flex gap-4">
-                <div class="w-1/2">
-                    <label class="block text-sm font-bold text-gray-700 dark:text-gray-200 mb-1">Superficie</label>
-                    <input type="text" id="plotArea" placeholder="ex: 0.5 ha" required class="w-full border border-gray-300 p-2 rounded">
-                </div>
-                <div class="w-1/2">
-                    <label class="block text-sm font-bold text-gray-700 dark:text-gray-200 mb-1">Localisation</label>
-                    <input type="text" id="plotLocation" placeholder="ex: Allada" required class="w-full border border-gray-300 p-2 rounded">
-                </div>
-            </div>
-            
-            <!-- MODULE 3 -->
-            <div class="mb-4 flex gap-4">
-                <div class="w-1/2">
-                    <label class="block text-sm font-bold text-gray-700 dark:text-gray-200 mb-1">Type de Sol</label>
-                    <select id="plotSoil" class="w-full border border-gray-300 p-2 rounded text-sm">
-                        <option value="Non précisé">Non précisé</option>
-                        <option value="Sableux">Sableux (drainant)</option>
-                        <option value="Argileux">Argileux (lourd)</option>
-                        <option value="Limoneux">Limoneux (riche)</option>
-                        <option value="Latéritique">Latéritique (rouge)</option>
-                    </select>
-                </div>
-                <div class="w-1/2">
-                    <label class="block text-sm font-bold text-gray-700 dark:text-gray-200 mb-1">Accès Eau</label>
-                    <select id="plotWater" class="w-full border border-gray-300 p-2 rounded text-sm">
-                        <option value="Pluvial">🌧️ Pluvial</option>
-                        <option value="Irrigation (Goutte à goutte)">💧 Goutte à goutte</option>
-                        <option value="Arrosage manuel">🪣 Manuel</option>
-                    </select>
-                </div>
-            </div>
-            
-            <div class="mb-4">
-                <label class="block text-sm font-bold text-gray-700 dark:text-gray-200 mb-1">Coordonnées GPS</label>
-                <div class="flex gap-2">
-                    <input type="text" id="plotGps" readonly placeholder="Non capturé" class="w-full border border-gray-300 p-2 rounded bg-gray-50 dark:bg-gray-800 text-xs">
-                    <button type="button" id="btnGps" class="bg-blue-100 text-blue-800 px-3 rounded border border-blue-200 hover:bg-blue-200 whitespace-nowrap text-sm font-bold"><i class="fas fa-map-marker-alt"></i> Capter</button>
-                </div>
-                <p id="gpsStatus" class="text-xs text-gray-500 mt-1"></p>
-            </div>
+ <!-- Add Plot Modal -->
+ <div id="addPlotModal"class="hidden fixed inset-0 bg-black/60 z-[100] flex items-center justify-center p-4">
+ <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
+ <div class="bg-brand text-white p-4 flex justify-between items-center">
+ <h3 class="font-bold text-lg">Ajouter une parcelle</h3>
+ <button id="closePlotModalBtn"class="text-white text-2xl hover:text-green-200">&times;</button>
+ </div>
+ <form id="addPlotForm"class="p-5">
+ <div class="mb-4">
+ <label class="block text-sm font-bold text-gray-700 mb-1">Culture</label>
+ <select id="plotCulture"required class="w-full border border-gray-300 p-2 rounded focus:ring-brand focus:border-brand">
+ <!-- Options injected via JS -->
+ </select>
+ </div>
+ <div class="mb-4">
+ <label class="block text-sm font-bold text-gray-700 mb-1">Date de semis / plantation</label>
+ <input type="date"id="plotDate"required class="w-full border border-gray-300 p-2 rounded focus:ring-brand">
+ </div>
+ <div class="mb-4 flex gap-4">
+ <div class="w-1/2">
+ <label class="block text-sm font-bold text-gray-700 mb-1">Superficie</label>
+ <input type="text"id="plotArea"placeholder="ex: 0.5 ha"required class="w-full border border-gray-300 p-2 rounded">
+ </div>
+ <div class="w-1/2">
+ <label class="block text-sm font-bold text-gray-700 mb-1">Localisation</label>
+ <input type="text"id="plotLocation"placeholder="ex: Allada"required class="w-full border border-gray-300 p-2 rounded">
+ </div>
+ </div>
+ 
+ <!-- MODULE 3 -->
+ <div class="mb-4 flex gap-4">
+ <div class="w-1/2">
+ <label class="block text-sm font-bold text-gray-700 mb-1">Type de Sol</label>
+ <select id="plotSoil"class="w-full border border-gray-300 p-2 rounded text-sm">
+ <option value="Non précisé">Non précisé</option>
+ <option value="Sableux">Sableux (drainant)</option>
+ <option value="Argileux">Argileux (lourd)</option>
+ <option value="Limoneux">Limoneux (riche)</option>
+ <option value="Latéritique">Latéritique (rouge)</option>
+ </select>
+ </div>
+ <div class="w-1/2">
+ <label class="block text-sm font-bold text-gray-700 mb-1">Accès Eau</label>
+ <select id="plotWater"class="w-full border border-gray-300 p-2 rounded text-sm">
+ <option value="Pluvial">🌧️ Pluvial</option>
+ <option value="Irrigation (Goutte à goutte)">💧 Goutte à goutte</option>
+ <option value="Arrosage manuel">🪣 Manuel</option>
+ </select>
+ </div>
+ </div>
+ 
+ <div class="mb-4">
+ <label class="block text-sm font-bold text-gray-700 mb-1">Coordonnées GPS</label>
+ <div class="flex gap-2">
+ <input type="text"id="plotGps"readonly placeholder="Non capturé"class="w-full border border-gray-300 p-2 rounded bg-gray-50 text-xs">
+ <button type="button"id="btnGps"class="bg-blue-100 text-blue-800 px-3 rounded border border-blue-200 hover:bg-blue-200 whitespace-nowrap text-sm font-bold"><i class="fas fa-map-marker-alt"></i> Capter</button>
+ </div>
+ <p id="gpsStatus"class="text-xs text-gray-500 mt-1"></p>
+ </div>
 
-            <button type="submit" class="w-full bg-brand text-white font-bold py-2 rounded shadow hover:bg-green-700 mt-2">Enregistrer</button>
-        </form>
-    </div>
-  </div>
+ <button type="submit"class="w-full bg-brand text-white font-bold py-2 rounded shadow hover:bg-green-700 mt-2">Enregistrer</button>
+ </form>
+ </div>
+ </div>
 
-  <script src="db.js"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const addPlotBtn = document.getElementById('addPlotBtn');
-        const closePlotModalBtn = document.getElementById('closePlotModalBtn');
-        const addPlotModal = document.getElementById('addPlotModal');
-        const addPlotForm = document.getElementById('addPlotForm');
-        const plotCultureSelect = document.getElementById('plotCulture');
+ <script src="db.js"></script>
+ <script>
+ document.addEventListener('DOMContentLoaded', () => {
+ const addPlotBtn = document.getElementById('addPlotBtn');
+ const closePlotModalBtn = document.getElementById('closePlotModalBtn');
+ const addPlotModal = document.getElementById('addPlotModal');
+ const addPlotForm = document.getElementById('addPlotForm');
+ const plotCultureSelect = document.getElementById('plotCulture');
 
-        const btnGps = document.getElementById('btnGps');
-        const plotGps = document.getElementById('plotGps');
-        const gpsStatus = document.getElementById('gpsStatus');
-        
-        if (btnGps) {
-            btnGps.addEventListener('click', () => {
-                if (!navigator.geolocation) {
-                    gpsStatus.innerText = "Non supporté par votre navigateur.";
-                    return;
-                }
-                gpsStatus.innerText = "Recherche satellite en cours...";
-                gpsStatus.className = "text-xs text-blue-500 mt-1 animate-pulse";
-                
-                navigator.geolocation.getCurrentPosition(
-                    (pos) => {
-                        plotGps.value = pos.coords.latitude.toFixed(4) + ', ' + pos.coords.longitude.toFixed(4);
-                        gpsStatus.innerText = "Position capturée !";
-                        gpsStatus.className = "text-xs text-green-500 mt-1 font-bold";
-                    },
-                    (err) => {
-                        gpsStatus.innerText = "Erreur: Activez le GPS et autorisez le navigateur.";
-                        gpsStatus.className = "text-xs text-red-500 mt-1";
-                        console.error(err);
-                    },
-                    { enableHighAccuracy: false, timeout: 20000, maximumAge: 0 }
-                );
-            });
-        }
+ const btnGps = document.getElementById('btnGps');
+ const plotGps = document.getElementById('plotGps');
+ const gpsStatus = document.getElementById('gpsStatus');
+ 
+ if (btnGps) {
+ btnGps.addEventListener('click', () => {
+ if (!navigator.geolocation) {
+ gpsStatus.innerText ="Non supporté par votre navigateur.";
+ return;
+ }
+ gpsStatus.innerText ="Recherche satellite en cours...";
+ gpsStatus.className ="text-xs text-blue-500 mt-1 animate-pulse";
+ 
+ navigator.geolocation.getCurrentPosition(
+ (pos) => {
+ plotGps.value = pos.coords.latitude.toFixed(4) + ', ' + pos.coords.longitude.toFixed(4);
+ gpsStatus.innerText ="Position capturée !";
+ gpsStatus.className ="text-xs text-green-500 mt-1 font-bold";
+ },
+ (err) => {
+ gpsStatus.innerText ="Erreur: Activez le GPS et autorisez le navigateur.";
+ gpsStatus.className ="text-xs text-red-500 mt-1";
+ console.error(err);
+ },
+ { enableHighAccuracy: false, timeout: 20000, maximumAge: 0 }
+ );
+ });
+ }
 
-        
-        const plotsList = document.getElementById('plotsList');
-        const remindersList = document.getElementById('remindersList');
+ 
+ const plotsList = document.getElementById('plotsList');
+ const remindersList = document.getElementById('remindersList');
 
-        // Check if redirected from culture page
-        const urlParams = new URLSearchParams(window.location.search);
-        const prefillCulture = urlParams.get('culture');
+ // Check if redirected from culture page
+ const urlParams = new URLSearchParams(window.location.search);
+ const prefillCulture = urlParams.get('culture');
 
-        // Populate Select
-        if(typeof DB !== 'undefined') {
-            Object.values(DB.cultures).forEach(c => {
-                const opt = document.createElement('option');
-                opt.value = c.id;
-                opt.text = c.nom;
-                if(c.id === prefillCulture) opt.selected = true;
-                plotCultureSelect.appendChild(opt);
-            });
-        }
+ // Populate Select
+ if(typeof DB !== 'undefined') {
+ Object.values(DB.cultures).forEach(c => {
+ const opt = document.createElement('option');
+ opt.value = c.id;
+ opt.text = c.nom;
+ if(c.id === prefillCulture) opt.selected = true;
+ plotCultureSelect.appendChild(opt);
+ });
+ }
 
-        if(prefillCulture) {
-            addPlotModal.classList.remove('hidden');
-        }
+ if(prefillCulture) {
+ addPlotModal.classList.remove('hidden');
+ }
 
-        addPlotBtn.addEventListener('click', () => addPlotModal.classList.remove('hidden'));
-        closePlotModalBtn.addEventListener('click', () => addPlotModal.classList.add('hidden'));
+ addPlotBtn.addEventListener('click', () => addPlotModal.classList.remove('hidden'));
+ closePlotModalBtn.addEventListener('click', () => addPlotModal.classList.add('hidden'));
 
-        // Load plots from LocalStorage
-        let plots = JSON.parse(localStorage.getItem('agr_plots')) || [];
+ // Load plots from LocalStorage
+ let plots = JSON.parse(localStorage.getItem('agr_plots')) || [];
 
-        function renderDashboard() {
-            plotsList.innerHTML = '';
-            remindersList.innerHTML = '';
-            initWeather();
-            
-            if(plots.length === 0) {
-                plotsList.innerHTML = '<p class="text-gray-500 text-center py-4 bg-white rounded border border-gray-100">Aucune parcelle ajoutée. Cliquez sur "Nouvelle Parcelle".</p>';
-                remindersList.innerHTML = '<p class="text-gray-500 text-center py-4">Pas de tâches pour le moment.</p>';
-                if(typeof window.mettreAJourGraphiques === 'function') window.mettreAJourGraphiques(plots);
-                return;
-            }
+ function renderDashboard() {
+ plotsList.innerHTML = '';
+ remindersList.innerHTML = '';
+ initWeather();
+ 
+ if(plots.length === 0) {
+ plotsList.innerHTML = '<p class="text-gray-500 text-center py-4 bg-white rounded border border-gray-100">Aucune parcelle ajoutée. Cliquez sur"Nouvelle Parcelle".</p>';
+ remindersList.innerHTML = '<p class="text-gray-500 text-center py-4">Pas de tâches pour le moment.</p>';
+ if(typeof window.mettreAJourGraphiques === 'function') window.mettreAJourGraphiques(plots);
+ return;
+ }
 
-            let allTasks = [];
+ let allTasks = [];
 
-            plots.forEach((plot, index) => {
-                const cData = DB.cultures[plot.cultureId];
-                if(!cData) return;
+ plots.forEach((plot, index) => {
+ const cData = DB.cultures[plot.cultureId];
+ if(!cData) return;
 
-                const sowDate = new Date(plot.date);
-                const harvestDate = new Date(sowDate);
-                harvestDate.setDate(harvestDate.getDate() + (cData.duree_jours || 90));
+ const sowDate = new Date(plot.date);
+ const harvestDate = new Date(sowDate);
+ harvestDate.setDate(harvestDate.getDate() + (cData.duree_jours || 90));
 
-                // Calculate progress
-                const today = new Date();
-                const totalDiff = harvestDate - sowDate;
-                const elapsedDiff = today - sowDate;
-                let progress = Math.max(0, Math.min(100, (elapsedDiff / totalDiff) * 100));
+ // Calculate progress
+ const today = new Date();
+ const totalDiff = harvestDate - sowDate;
+ const elapsedDiff = today - sowDate;
+ let progress = Math.max(0, Math.min(100, (elapsedDiff / totalDiff) * 100));
 
-                // --- SUIVI FINANCIER CALCS ---
-                const depenses = plot.depenses || [];
-                const totalDepenses = depenses.reduce((sum, d) => sum + d.montant, 0);
-                
-                let budgetPrevu = 0;
-                if (cData.budget && cData.budget.cout_intrants !== 'N/A') {
-                    const intrants = parseInt(cData.budget.cout_intrants.replace(/\D/g, '')) || 0;
-                    const mainOeuvre = parseInt(cData.budget.cout_main_oeuvre.replace(/\D/g, '')) || 0;
-                    const areaNum = parseFloat(plot.area) || 1;
-                    budgetPrevu = (intrants + mainOeuvre) * areaNum;
-                }
-                
-                let percentBudget = budgetPrevu > 0 ? Math.min(100, (totalDepenses / budgetPrevu) * 100) : 0;
-                let colorBudget = totalDepenses > budgetPrevu && budgetPrevu > 0 ? 'bg-red-500' : 'bg-yellow-500';
-                
-                let financeUI = '';
-                if (plot.revenuFinal !== undefined) {
-                    const benefice = plot.revenuFinal - totalDepenses;
-                    const benefColor = benefice >= 0 ? 'text-green-700 bg-green-100' : 'text-red-700 bg-red-100';
-                    financeUI = `
-                        <div class="mt-3 p-3 ${benefColor} rounded border">
-                            <div class="flex justify-between items-center mb-2">
-                                <div><span class="font-bold">Clôturé :</span> Bénéfice net</div>
-                                <div class="font-bold text-lg">${benefice.toLocaleString('fr-FR')} FCFA</div>
-                            </div>
-                            <button onclick="window.genererPDFBilan(${index})" class="w-full text-xs bg-white text-gray-700 dark:text-gray-200 py-1 rounded border border-gray-300 hover:bg-gray-100 shadow-sm transition"><i class="fas fa-file-pdf text-red-500"></i> Télécharger Bilan PDF</button>
-                        </div>
-                    `;
-                } else {
-                    financeUI = `
-                        <div class="mt-3 bg-gray-50 dark:bg-gray-800 p-3 rounded border border-gray-100">
-                            <div class="flex justify-between text-xs mb-1 text-gray-600">
-                                <span>Dépenses: <b>${totalDepenses.toLocaleString('fr-FR')} F</b></span>
-                                <span>Budget prévu: ${budgetPrevu > 0 ? budgetPrevu.toLocaleString('fr-FR') + ' F' : 'N/A'}</span>
-                            </div>
-                            ${budgetPrevu > 0 ? `<div class="w-full bg-gray-200 rounded-full h-1.5 mb-2"><div class="${colorBudget} h-1.5 rounded-full" style="width: ${percentBudget}%"></div></div>` : ''}
-                            <div class="flex gap-2 mt-2">
-                                <button onclick="window.ouvrirModalJournal(${index})" class="flex-1 text-xs bg-white border border-blue-300 hover:bg-blue-50 text-blue-700 py-1 px-2 rounded shadow-sm"><i class="fas fa-book"></i> Journal</button>
-                                <button onclick="window.ouvrirModalDepense(${index})" class="flex-1 text-xs bg-white border border-gray-300 hover:bg-gray-100 text-gray-700 dark:text-gray-200 py-1 px-2 rounded shadow-sm"><i class="fas fa-plus"></i> Dépense</button>
-                                <button onclick="window.ouvrirModalBilan(${index})" class="flex-1 text-xs bg-[#16a34a] hover:bg-green-700 text-white py-1 px-2 rounded shadow-sm"><i class="fas fa-check"></i> Récolter & Bilan</button>
-                            </div>
-                        </div>
-                    `;
-                }
+ // --- SUIVI FINANCIER CALCS ---
+ const depenses = plot.depenses || [];
+ const totalDepenses = depenses.reduce((sum, d) => sum + d.montant, 0);
+ 
+ let budgetPrevu = 0;
+ if (cData.budget && cData.budget.cout_intrants !== 'N/A') {
+ const intrants = parseInt(cData.budget.cout_intrants.replace(/\D/g, '')) || 0;
+ const mainOeuvre = parseInt(cData.budget.cout_main_oeuvre.replace(/\D/g, '')) || 0;
+ const areaNum = parseFloat(plot.area) || 1;
+ budgetPrevu = (intrants + mainOeuvre) * areaNum;
+ }
+ 
+ let percentBudget = budgetPrevu > 0 ? Math.min(100, (totalDepenses / budgetPrevu) * 100) : 0;
+ let colorBudget = totalDepenses > budgetPrevu && budgetPrevu > 0 ? 'bg-red-500' : 'bg-yellow-500';
+ 
+ let financeUI = '';
+ if (plot.revenuFinal !== undefined) {
+ const benefice = plot.revenuFinal - totalDepenses;
+ const benefColor = benefice >= 0 ? 'text-green-700 bg-green-100' : 'text-red-700 bg-red-100';
+ financeUI = `
+ <div class="mt-3 p-3 ${benefColor} rounded border">
+ <div class="flex justify-between items-center mb-2">
+ <div><span class="font-bold">Clôturé :</span> Bénéfice net</div>
+ <div class="font-bold text-lg">${benefice.toLocaleString('fr-FR')} FCFA</div>
+ </div>
+ <button onclick="window.genererPDFBilan(${index})"class="w-full text-xs bg-white text-gray-700 py-1 rounded border border-gray-300 hover:bg-gray-100 shadow-sm transition"><i class="fas fa-file-pdf text-red-500"></i> Télécharger Bilan PDF</button>
+ </div>
+ `;
+ } else {
+ financeUI = `
+ <div class="mt-3 bg-gray-50 p-3 rounded border border-gray-100">
+ <div class="flex justify-between text-xs mb-1 text-gray-600">
+ <span>Dépenses: <b>${totalDepenses.toLocaleString('fr-FR')} F</b></span>
+ <span>Budget prévu: ${budgetPrevu > 0 ? budgetPrevu.toLocaleString('fr-FR') + ' F' : 'N/A'}</span>
+ </div>
+ ${budgetPrevu > 0 ? `<div class="w-full bg-gray-200 rounded-full h-1.5 mb-2"><div class="${colorBudget} h-1.5 rounded-full"style="width: ${percentBudget}%"></div></div>` : ''}
+ <div class="flex gap-2 mt-2">
+ <button onclick="window.ouvrirModalJournal(${index})"class="flex-1 text-xs bg-white border border-blue-300 hover:bg-blue-50 text-blue-700 py-1 px-2 rounded shadow-sm"><i class="fas fa-book"></i> Journal</button>
+ <button onclick="window.ouvrirModalDepense(${index})"class="flex-1 text-xs bg-white border border-gray-300 hover:bg-gray-100 text-gray-700 py-1 px-2 rounded shadow-sm"><i class="fas fa-plus"></i> Dépense</button>
+ <button onclick="window.ouvrirModalBilan(${index})"class="flex-1 text-xs bg-[#16a34a] hover:bg-green-700 text-white py-1 px-2 rounded shadow-sm"><i class="fas fa-check"></i> Récolter & Bilan</button>
+ </div>
+ </div>
+ `;
+ }
 
-                plotsList.innerHTML += `
-                    <div class="bg-white dark:bg-cardDark dark:border-gray-700 p-4 rounded-xl shadow-sm border border-green-100 dark:border-gray-700 animate-fade-in-up hover:shadow-md transition-all duration-300 flex flex-col relative overflow-hidden">
-                        <div class="absolute left-0 top-0 bottom-0 w-2 bg-brand"></div>
-                        <div class="flex justify-between items-start pl-2">
-                            <div>
-                                <h4 class="font-bold text-gray-800 dark:text-gray-100 text-lg">${cData.nom} <span class="text-sm font-normal text-gray-500">(${plot.area})</span></h4>
-                                <div class="mt-1 flex items-center gap-2 mb-1">
-                                    <span class="text-xs text-gray-500">Santé:</span>
-                                    <select onchange="window.changerSante(${index}, this.value)" class="text-xs rounded border border-gray-200 p-1 bg-white outline-none ${plot.sante === 'Malade' ? 'text-red-600 font-bold' : (plot.sante === 'Stress' ? 'text-orange-500 font-bold' : 'text-green-600 font-bold')}">
-                                        <option value="Excellente" ${plot.sante === 'Excellente' || !plot.sante ? 'selected' : ''}>🟢 Excellente</option>
-                                        <option value="Stress" ${plot.sante === 'Stress' ? 'selected' : ''}>🟡 En Stress</option>
-                                        <option value="Malade" ${plot.sante === 'Malade' ? 'selected' : ''}>🔴 Malade</option>
-                                    </select>
-                                </div>
-                                <p class="text-sm text-gray-600 mb-1"><i class="fas fa-map-marker-alt"></i> ${plot.location} &nbsp;|&nbsp; Semis: ${sowDate.toLocaleDateString('fr-FR')}</p>
-                                <div class="flex flex-wrap gap-2 text-[10px] sm:text-xs">
-                                    ${plot.soil && plot.soil !== 'Non précisé' ? `<span class="bg-amber-50 text-amber-800 border border-amber-200 px-2 py-0.5 rounded shadow-sm">${plot.soil}</span>` : ''}
-                                    ${plot.water ? `<span class="bg-blue-50 text-blue-800 border border-blue-200 px-2 py-0.5 rounded shadow-sm">${plot.water}</span>` : ''}
-                                    ${plot.gps ? `<a href="https://maps.google.com/?q=${plot.gps}" target="_blank" class="bg-gray-100 text-gray-700 dark:text-gray-200 border border-gray-300 px-2 py-0.5 rounded hover:bg-gray-200 shadow-sm transition"><i class="fas fa-satellite"></i> GPS</a>` : ''}
-                                </div>
-                            </div>
-                            <button onclick="window.deletePlot(${index})" class="text-gray-300 hover:text-red-500 text-lg" title="Supprimer"><i class="fas fa-trash-alt"></i></button>
-                        </div>
-                        
-                        <div class="mt-4 pl-2 grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <!-- Agility -->
-                            <div>
-                                <div class="flex justify-between text-xs mb-1 text-gray-600">
-                                    <span>Croissance</span>
-                                    <span>${Math.round(progress)}%</span>
-                                </div>
-                                <div class="w-full bg-gray-200 rounded-full h-2">
-                                    <div class="bg-brand h-2 rounded-full" style="width: ${progress}%"></div>
-                                </div>
-                                <p class="text-xs text-right mt-1 text-gray-500">Récolte prévue: ${harvestDate.toLocaleDateString('fr-FR')}</p>
-                            </div>
-                            <!-- Finance -->
-                            <div>
-                                ${financeUI}
-                            </div>
-                        </div>
-                    </div>
-                `;
+ plotsList.innerHTML += `
+ <div class="bg-white p-4 rounded-xl shadow-sm border border-green-100 animate-fade-in-up hover:shadow-md transition-all duration-300 flex flex-col relative overflow-hidden">
+ <div class="absolute left-0 top-0 bottom-0 w-2 bg-brand"></div>
+ <div class="flex justify-between items-start pl-2">
+ <div>
+ <h4 class="font-bold text-gray-800 text-lg">${cData.nom} <span class="text-sm font-normal text-gray-500">(${plot.area})</span></h4>
+ <div class="mt-1 flex items-center gap-2 mb-1">
+ <span class="text-xs text-gray-500">Santé:</span>
+ <select onchange="window.changerSante(${index}, this.value)"class="text-xs rounded border border-gray-200 p-1 bg-white outline-none ${plot.sante === 'Malade' ? 'text-red-600 font-bold' : (plot.sante === 'Stress' ? 'text-orange-500 font-bold' : 'text-green-600 font-bold')}">
+ <option value="Excellente"${plot.sante === 'Excellente' || !plot.sante ? 'selected' : ''}>🟢 Excellente</option>
+ <option value="Stress"${plot.sante === 'Stress' ? 'selected' : ''}>🟡 En Stress</option>
+ <option value="Malade"${plot.sante === 'Malade' ? 'selected' : ''}>🔴 Malade</option>
+ </select>
+ </div>
+ <p class="text-sm text-gray-600 mb-1"><i class="fas fa-map-marker-alt"></i> ${plot.location} &nbsp;|&nbsp; Semis: ${sowDate.toLocaleDateString('fr-FR')}</p>
+ <div class="flex flex-wrap gap-2 text-[10px] sm:text-xs">
+ ${plot.soil && plot.soil !== 'Non précisé' ? `<span class="bg-amber-50 text-amber-800 border border-amber-200 px-2 py-0.5 rounded shadow-sm">${plot.soil}</span>` : ''}
+ ${plot.water ? `<span class="bg-blue-50 text-blue-800 border border-blue-200 px-2 py-0.5 rounded shadow-sm">${plot.water}</span>` : ''}
+ ${plot.gps ? `<a href="https://maps.google.com/?q=${plot.gps}"target="_blank"class="bg-gray-100 text-gray-700 border border-gray-300 px-2 py-0.5 rounded hover:bg-gray-200 shadow-sm transition"><i class="fas fa-satellite"></i> GPS</a>` : ''}
+ </div>
+ </div>
+ <button onclick="window.deletePlot(${index})"class="text-gray-300 hover:text-red-500 text-lg"title="Supprimer"><i class="fas fa-trash-alt"></i></button>
+ </div>
+ 
+ <div class="mt-4 pl-2 grid grid-cols-1 md:grid-cols-2 gap-4">
+ <!-- Agility -->
+ <div>
+ <div class="flex justify-between text-xs mb-1 text-gray-600">
+ <span>Croissance</span>
+ <span>${Math.round(progress)}%</span>
+ </div>
+ <div class="w-full bg-gray-200 rounded-full h-2">
+ <div class="bg-brand h-2 rounded-full"style="width: ${progress}%"></div>
+ </div>
+ <p class="text-xs text-right mt-1 text-gray-500">Récolte prévue: ${harvestDate.toLocaleDateString('fr-FR')}</p>
+ </div>
+ <!-- Finance -->
+ <div>
+ ${financeUI}
+ </div>
+ </div>
+ </div>
+ `;
 
-                // Generate Tasks safely
-                if (cData.etapes && Array.isArray(cData.etapes)) {
-                    cData.etapes.forEach(etape => {
-                        let daysToAdd = 0;
-                        if (etape.jour !== undefined) {
-                            daysToAdd = etape.jour;
-                        } else if (etape.semaine) {
-                            let match = etape.semaine.match(/\d+/);
-                            if (match) daysToAdd = parseInt(match[0]) * 7;
-                        }
-                        
-                        let taskDate = new Date(sowDate);
-                        taskDate.setDate(taskDate.getDate() + daysToAdd);
+ // Generate Tasks safely
+ if (cData.etapes && Array.isArray(cData.etapes)) {
+ cData.etapes.forEach(etape => {
+ let daysToAdd = 0;
+ if (etape.jour !== undefined) {
+ daysToAdd = etape.jour;
+ } else if (etape.semaine) {
+ let match = etape.semaine.match(/\d+/);
+ if (match) daysToAdd = parseInt(match[0]) * 7;
+ }
+ 
+ let taskDate = new Date(sowDate);
+ taskDate.setDate(taskDate.getDate() + daysToAdd);
 
-                        allTasks.push({
-                            date: taskDate,
-                            plotName: cData.nom,
-                            title: etape.nom || etape.titre,
-                            desc: etape.description || ''
-                        });
-                    });
-                }
-            });
+ allTasks.push({
+ date: taskDate,
+ plotName: cData.nom,
+ title: etape.nom || etape.titre,
+ desc: etape.description || ''
+ });
+ });
+ }
+ });
 
-            // Update Charts
-            if(typeof window.mettreAJourGraphiques === 'function') {
-                window.mettreAJourGraphiques(plots);
-            }
+ // Update Charts
+ if(typeof window.mettreAJourGraphiques === 'function') {
+ window.mettreAJourGraphiques(plots);
+ }
 
-            // Sort and display next tasks
-            allTasks.sort((a,b) => a.date - b.date);
-            const now = new Date();
-            const nextTasks = allTasks.filter(t => t.date >= new Date(now.setDate(now.getDate() - 7))); 
+ // Sort and display next tasks
+ allTasks.sort((a,b) => a.date - b.date);
+ const now = new Date();
+ const nextTasks = allTasks.filter(t => t.date >= new Date(now.setDate(now.getDate() - 7))); 
 
-            if(nextTasks.length === 0) {
-                remindersList.innerHTML = '<p class="text-gray-500">Pas de tâches imminentes.</p>';
-            } else {
-                nextTasks.slice(0, 5).forEach(task => { 
-                    const diffDays = Math.round((task.date - new Date()) / (1000 * 60 * 60 * 24));
-                    let dateTag = diffDays === 0 ? "Aujourd'hui" : (diffDays < 0 ? "En retard" : `Dans ${diffDays} j`);
-                    let colorClass = diffDays < 0 ? "bg-red-100 text-red-800" : (diffDays === 0 ? "bg-orange-100 text-orange-800" : "bg-green-100 text-green-800");
+ if(nextTasks.length === 0) {
+ remindersList.innerHTML = '<p class="text-gray-500">Pas de tâches imminentes.</p>';
+ } else {
+ nextTasks.slice(0, 5).forEach(task => { 
+ const diffDays = Math.round((task.date - new Date()) / (1000 * 60 * 60 * 24));
+ let dateTag = diffDays === 0 ?"Aujourd'hui": (diffDays < 0 ?"En retard": `Dans ${diffDays} j`);
+ let colorClass = diffDays < 0 ?"bg-red-100 text-red-800": (diffDays === 0 ?"bg-orange-100 text-orange-800":"bg-green-100 text-green-800");
 
-                    remindersList.innerHTML += `
-                        <div class="bg-white p-3 rounded shadow-sm border-l-4 border-yellow-500 flex justify-between items-center mb-2">
-                            <div>
-                                <h5 class="font-bold text-gray-800 dark:text-gray-100 text-sm">${task.title} <span class="text-xs font-normal text-gray-500">(${task.plotName})</span></h5>
-                                <p class="text-xs text-gray-600 line-clamp-1">${task.desc}</p>
-                            </div>
-                            <div class="${colorClass} text-xs px-2 py-1 rounded font-bold whitespace-nowrap">
-                                ${dateTag}
-                            </div>
-                        </div>
-                    `;
-                });
-            }
-        }
+ remindersList.innerHTML += `
+ <div class="bg-white p-3 rounded shadow-sm border-l-4 border-yellow-500 flex justify-between items-center mb-2">
+ <div>
+ <h5 class="font-bold text-gray-800 text-sm">${task.title} <span class="text-xs font-normal text-gray-500">(${task.plotName})</span></h5>
+ <p class="text-xs text-gray-600 line-clamp-1">${task.desc}</p>
+ </div>
+ <div class="${colorClass} text-xs px-2 py-1 rounded font-bold whitespace-nowrap">
+ ${dateTag}
+ </div>
+ </div>
+ `;
+ });
+ }
+ }
 
-        // Handle Form Submit
-        addPlotForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const newPlot = {
-                cultureId: plotCultureSelect.value,
-                date: document.getElementById('plotDate').value,
-                area: document.getElementById('plotArea').value,
-                location: document.getElementById('plotLocation').value,
-                soil: document.getElementById('plotSoil').value,
-                water: document.getElementById('plotWater').value,
-                gps: document.getElementById('plotGps').value
-            };
-            plots.push(newPlot);
-            localStorage.setItem('agr_plots', JSON.stringify(plots));
-            addPlotModal.classList.add('hidden');
-            addPlotForm.reset();
-            renderDashboard();
-        });
+ // Handle Form Submit
+ addPlotForm.addEventListener('submit', (e) => {
+ e.preventDefault();
+ const newPlot = {
+ cultureId: plotCultureSelect.value,
+ date: document.getElementById('plotDate').value,
+ area: document.getElementById('plotArea').value,
+ location: document.getElementById('plotLocation').value,
+ soil: document.getElementById('plotSoil').value,
+ water: document.getElementById('plotWater').value,
+ gps: document.getElementById('plotGps').value
+ };
+ plots.push(newPlot);
+ localStorage.setItem('agr_plots', JSON.stringify(plots));
+ addPlotModal.classList.add('hidden');
+ addPlotForm.reset();
+ renderDashboard();
+ });
 
-        window.deletePlot = function(index) {
-            if(confirm('Supprimer cette parcelle ?')) {
-                plots.splice(index, 1);
-                localStorage.setItem('agr_plots', JSON.stringify(plots));
-                renderDashboard();
-            }
-        }
+ window.deletePlot = function(index) {
+ if(confirm('Supprimer cette parcelle ?')) {
+ plots.splice(index, 1);
+ localStorage.setItem('agr_plots', JSON.stringify(plots));
+ renderDashboard();
+ }
+ }
 
-        
-        // --- SUIVI FINANCIER LOGIQUE ---
-        window.ouvrirModalDepense = function(index) {
-            document.getElementById('depensePlotIndex').value = index;
-            document.getElementById('modalDepense').classList.remove('hidden');
-        };
-        window.ouvrirModalBilan = function(index) {
-            document.getElementById('bilanPlotIndex').value = index;
-            document.getElementById('modalBilan').classList.remove('hidden');
-        };
+ 
+ // --- SUIVI FINANCIER LOGIQUE ---
+ window.ouvrirModalDepense = function(index) {
+ document.getElementById('depensePlotIndex').value = index;
+ document.getElementById('modalDepense').classList.remove('hidden');
+ };
+ window.ouvrirModalBilan = function(index) {
+ document.getElementById('bilanPlotIndex').value = index;
+ document.getElementById('modalBilan').classList.remove('hidden');
+ };
 
-        const formDepense = document.getElementById('formDepense');
-        if(formDepense) {
-            formDepense.addEventListener('submit', (e) => {
-                e.preventDefault();
-                const index = document.getElementById('depensePlotIndex').value;
-                const motif = document.getElementById('depenseMotif').value;
-                const montant = parseInt(document.getElementById('depenseMontant').value);
-                
-                if (!plots[index].depenses) plots[index].depenses = [];
-                plots[index].depenses.push({ motif, montant, date: new Date().toISOString() });
-                
-                localStorage.setItem('agr_plots', JSON.stringify(plots));
-                document.getElementById('modalDepense').classList.add('hidden');
-                formDepense.reset();
-                renderDashboard();
-            });
-        }
+ const formDepense = document.getElementById('formDepense');
+ if(formDepense) {
+ formDepense.addEventListener('submit', (e) => {
+ e.preventDefault();
+ const index = document.getElementById('depensePlotIndex').value;
+ const motif = document.getElementById('depenseMotif').value;
+ const montant = parseInt(document.getElementById('depenseMontant').value);
+ 
+ if (!plots[index].depenses) plots[index].depenses = [];
+ plots[index].depenses.push({ motif, montant, date: new Date().toISOString() });
+ 
+ localStorage.setItem('agr_plots', JSON.stringify(plots));
+ document.getElementById('modalDepense').classList.add('hidden');
+ formDepense.reset();
+ renderDashboard();
+ });
+ }
 
-        const formBilan = document.getElementById('formBilan');
-        if(formBilan) {
-            formBilan.addEventListener('submit', (e) => {
-                e.preventDefault();
-                const index = document.getElementById('bilanPlotIndex').value;
-                const revenu = parseInt(document.getElementById('bilanRevenu').value);
-                
-                plots[index].revenuFinal = revenu;
-                
-                localStorage.setItem('agr_plots', JSON.stringify(plots));
-                document.getElementById('modalBilan').classList.add('hidden');
-                formBilan.reset();
-                renderDashboard();
-            });
-        }
+ const formBilan = document.getElementById('formBilan');
+ if(formBilan) {
+ formBilan.addEventListener('submit', (e) => {
+ e.preventDefault();
+ const index = document.getElementById('bilanPlotIndex').value;
+ const revenu = parseInt(document.getElementById('bilanRevenu').value);
+ 
+ plots[index].revenuFinal = revenu;
+ 
+ localStorage.setItem('agr_plots', JSON.stringify(plots));
+ document.getElementById('modalBilan').classList.add('hidden');
+ formBilan.reset();
+ renderDashboard();
+ });
+ }
 
-        renderDashboard();
-        
-        // --- MODULE 4 : GRAPHIQUES ET PDF ---
-        let chartCultInst = null;
-        let chartFinInst = null;
+ renderDashboard();
+ 
+ // --- MODULE 4 : GRAPHIQUES ET PDF ---
+ let chartCultInst = null;
+ let chartFinInst = null;
 
-        window.mettreAJourGraphiques = function(plotsListArg) {
-            const ctxCult = document.getElementById('chartCultures');
-            const ctxFin = document.getElementById('chartFinances');
-            if(!ctxCult || !ctxFin) return;
+ window.mettreAJourGraphiques = function(plotsListArg) {
+ const ctxCult = document.getElementById('chartCultures');
+ const ctxFin = document.getElementById('chartFinances');
+ if(!ctxCult || !ctxFin) return;
 
-            // Data for Cultures
-            const counts = {};
-            let totalDep = 0;
-            let totalRev = 0;
+ // Data for Cultures
+ const counts = {};
+ let totalDep = 0;
+ let totalRev = 0;
 
-            plotsListArg.forEach(p => {
-                const cName = DB.cultures[p.cultureId] ? DB.cultures[p.cultureId].nom : p.cultureId;
-                counts[cName] = (counts[cName] || 0) + 1;
-                
-                const dep = p.depenses ? p.depenses.reduce((s, d) => s + d.montant, 0) : 0;
-                totalDep += dep;
-                if(p.revenuFinal) totalRev += p.revenuFinal;
-            });
+ plotsListArg.forEach(p => {
+ const cName = DB.cultures[p.cultureId] ? DB.cultures[p.cultureId].nom : p.cultureId;
+ counts[cName] = (counts[cName] || 0) + 1;
+ 
+ const dep = p.depenses ? p.depenses.reduce((s, d) => s + d.montant, 0) : 0;
+ totalDep += dep;
+ if(p.revenuFinal) totalRev += p.revenuFinal;
+ });
 
-            if(chartCultInst) chartCultInst.destroy();
-            if(chartFinInst) chartFinInst.destroy();
+ if(chartCultInst) chartCultInst.destroy();
+ if(chartFinInst) chartFinInst.destroy();
 
-            
-    // --- MODULE MÉTÉO ---
-    async function fetchWeather(lat, lon) {
-        try {
-            const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
-            const data = await res.json();
-            const weather = data.current_weather;
-            
-            let icon = 'fa-sun';
-            let desc = 'Dégagé';
-            const code = weather.weathercode;
-            if (code >= 1 && code <= 3) { icon = 'fa-cloud-sun'; desc = 'Nuageux'; }
-            if (code >= 45 && code <= 48) { icon = 'fa-smog'; desc = 'Brouillard'; }
-            if (code >= 51 && code <= 67) { icon = 'fa-cloud-rain'; desc = 'Pluie'; }
-            if (code >= 71 && code <= 77) { icon = 'fa-snowflake'; desc = 'Neige'; }
-            if (code >= 80 && code <= 82) { icon = 'fa-cloud-showers-heavy'; desc = 'Averses'; }
-            if (code >= 95) { icon = 'fa-bolt'; desc = 'Orage'; }
-            
-            document.getElementById('weatherIcon').className = `fas ${icon}`;
-            document.getElementById('weatherDesc').innerText = desc;
-            document.getElementById('weatherTemp').innerText = `${weather.temperature}°C`;
-            document.getElementById('weatherDetails').innerText = `Vent: ${weather.windspeed} km/h`;
-            document.getElementById('weatherWidget').classList.remove('hidden');
-        } catch(e) {
-            console.error("Erreur météo:", e);
-        }
-    }
+ 
+ // --- MODULE MÉTÉO ---
+ async function fetchWeather(lat, lon) {
+ try {
+ const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
+ const data = await res.json();
+ const weather = data.current_weather;
+ 
+ let icon = 'fa-sun';
+ let desc = 'Dégagé';
+ const code = weather.weathercode;
+ if (code >= 1 && code <= 3) { icon = 'fa-cloud-sun'; desc = 'Nuageux'; }
+ if (code >= 45 && code <= 48) { icon = 'fa-smog'; desc = 'Brouillard'; }
+ if (code >= 51 && code <= 67) { icon = 'fa-cloud-rain'; desc = 'Pluie'; }
+ if (code >= 71 && code <= 77) { icon = 'fa-snowflake'; desc = 'Neige'; }
+ if (code >= 80 && code <= 82) { icon = 'fa-cloud-showers-heavy'; desc = 'Averses'; }
+ if (code >= 95) { icon = 'fa-bolt'; desc = 'Orage'; }
+ 
+ document.getElementById('weatherIcon').className = `fas ${icon}`;
+ document.getElementById('weatherDesc').innerText = desc;
+ document.getElementById('weatherTemp').innerText = `${weather.temperature}°C`;
+ document.getElementById('weatherDetails').innerText = `Vent: ${weather.windspeed} km/h`;
+ document.getElementById('weatherWidget').classList.remove('hidden');
+ } catch(e) {
+ console.error("Erreur météo:", e);
+ }
+ }
 
-    function initWeather() {
-        let lat = 9.3077; // Default: Parakou, Benin
-        let lon = 2.3158;
-        
-        try {
-            const localPlots = JSON.parse(localStorage.getItem('agr_plots')) || [];
-            if (localPlots.length > 0) {
-                const plotWithGps = localPlots.find(p => p.gps && p.gps.includes(','));
-                if (plotWithGps) {
-                    const coords = plotWithGps.gps.split(',');
-                    lat = parseFloat(coords[0].trim());
-                    lon = parseFloat(coords[1].trim());
-                }
-            }
-        } catch(e) {}
-        
-        fetchWeather(lat, lon);
-    }
-    
-    // Initialize when DOM is ready
-    document.addEventListener('DOMContentLoaded', () => {
-        setTimeout(initWeather, 500); // slight delay to let plots load
-    });
+ function initWeather() {
+ let lat = 9.3077; // Default: Parakou, Benin
+ let lon = 2.3158;
+ 
+ try {
+ const localPlots = JSON.parse(localStorage.getItem('agr_plots')) || [];
+ if (localPlots.length > 0) {
+ const plotWithGps = localPlots.find(p => p.gps && p.gps.includes(','));
+ if (plotWithGps) {
+ const coords = plotWithGps.gps.split(',');
+ lat = parseFloat(coords[0].trim());
+ lon = parseFloat(coords[1].trim());
+ }
+ }
+ } catch(e) {}
+ 
+ fetchWeather(lat, lon);
+ }
+ 
+ // Initialize when DOM is ready
+ document.addEventListener('DOMContentLoaded', () => {
+ setTimeout(initWeather, 500); // slight delay to let plots load
+ });
 
-              // Check if Chart is defined before using it
-            if(typeof Chart === 'undefined') { alert('Chart.js n\'est pas chargé.'); return; }
+ // Check if Chart is defined before using it
+ if(typeof Chart === 'undefined') { alert('Chart.js n\'est pas chargé.'); return; }
 
-            chartCultInst = new Chart(ctxCult, {
-                type: 'doughnut',
-                data: {
-                    labels: Object.keys(counts),
-                    datasets: [{
-                        data: Object.values(counts),
-                        backgroundColor: ['#16a34a', '#86efac', '#3b82f6', '#fcd34d', '#f87171']
-                    }]
-                },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { boxWidth: 12, font: {size: 10} } } } }
-            });
+ chartCultInst = new Chart(ctxCult, {
+ type: 'doughnut',
+ data: {
+ labels: Object.keys(counts),
+ datasets: [{
+ data: Object.values(counts),
+ backgroundColor: ['#16a34a', '#86efac', '#3b82f6', '#fcd34d', '#f87171']
+ }]
+ },
+ options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { boxWidth: 12, font: {size: 10} } } } }
+ });
 
-            try { chartFinInst = new Chart(ctxFin, {
-                type: 'bar',
-                data: {
-                    labels: ['Dépenses Globales', 'Revenus (Clôturés)'],
-                    datasets: [{
-                        label: 'FCFA',
-                        data: [totalDep, totalRev],
-                        backgroundColor: ['#ef4444', '#16a34a']
-                    }]
-                },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
-            });
-            } catch(e) { alert('Erreur Graphique: ' + e.message); }
-        };
+ try { chartFinInst = new Chart(ctxFin, {
+ type: 'bar',
+ data: {
+ labels: ['Dépenses Globales', 'Revenus (Clôturés)'],
+ datasets: [{
+ label: 'FCFA',
+ data: [totalDep, totalRev],
+ backgroundColor: ['#ef4444', '#16a34a']
+ }]
+ },
+ options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+ });
+ } catch(e) { alert('Erreur Graphique: ' + e.message); }
+ };
 
-        window.genererPDFBilan = function(index) {
-            const plot = plots[index];
-            const cData = DB.cultures[plot.cultureId];
-            if(!cData) return;
+ window.genererPDFBilan = function(index) {
+ const plot = plots[index];
+ const cData = DB.cultures[plot.cultureId];
+ if(!cData) return;
 
-            if(typeof window.jspdf === 'undefined') {
-                alert("Erreur: le module PDF n'est pas encore chargé.");
-                return;
-            }
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            
-            // Header
-            doc.setFillColor(22, 163, 74);
-            doc.rect(0, 0, 210, 40, 'F');
-            doc.setTextColor(255, 255, 255);
-            doc.setFontSize(22);
-            doc.text("BILAN DE CAMPAGNE AGRICOLE", 105, 20, { align: 'center' });
-            doc.setFontSize(14);
-            doc.text("Carnet de suivi - AgriBaud+", 105, 30, { align: 'center' });
+ if(typeof window.jspdf === 'undefined') {
+ alert("Erreur: le module PDF n'est pas encore chargé.");
+ return;
+ }
+ const { jsPDF } = window.jspdf;
+ const doc = new jsPDF();
+ 
+ // Header
+ doc.setFillColor(22, 163, 74);
+ doc.rect(0, 0, 210, 40, 'F');
+ doc.setTextColor(255, 255, 255);
+ doc.setFontSize(22);
+ doc.text("BILAN DE CAMPAGNE AGRICOLE", 105, 20, { align: 'center' });
+ doc.setFontSize(14);
+ doc.text("Carnet de suivi - AgriBaud+", 105, 30, { align: 'center' });
 
-            // Plot Info
-            doc.setTextColor(0, 0, 0);
-            doc.setFontSize(16);
-            doc.text("Informations de la Parcelle", 14, 55);
-            
-            doc.setFontSize(11);
-            doc.text(`Culture : ${cData.nom}`, 14, 65);
-            doc.text(`Superficie : ${plot.area}`, 14, 72);
-            doc.text(`Localisation : ${plot.location}`, 14, 79);
-            doc.text(`Date de semis : ${new Date(plot.date).toLocaleDateString('fr-FR')}`, 14, 86);
-            if (plot.soil) doc.text(`Type de sol : ${plot.soil}`, 110, 65);
-            if (plot.water) doc.text(`Accès eau : ${plot.water}`, 110, 72);
-            if (plot.gps) doc.text(`Coordonnées GPS : ${plot.gps}`, 110, 79);
+ // Plot Info
+ doc.setTextColor(0, 0, 0);
+ doc.setFontSize(16);
+ doc.text("Informations de la Parcelle", 14, 55);
+ 
+ doc.setFontSize(11);
+ doc.text(`Culture : ${cData.nom}`, 14, 65);
+ doc.text(`Superficie : ${plot.area}`, 14, 72);
+ doc.text(`Localisation : ${plot.location}`, 14, 79);
+ doc.text(`Date de semis : ${new Date(plot.date).toLocaleDateString('fr-FR')}`, 14, 86);
+ if (plot.soil) doc.text(`Type de sol : ${plot.soil}`, 110, 65);
+ if (plot.water) doc.text(`Accès eau : ${plot.water}`, 110, 72);
+ if (plot.gps) doc.text(`Coordonnées GPS : ${plot.gps}`, 110, 79);
 
-            // Finances Table
-            doc.setFontSize(16);
-            doc.text("Historique des Dépenses", 14, 105);
+ // Finances Table
+ doc.setFontSize(16);
+ doc.text("Historique des Dépenses", 14, 105);
 
-            const depensesData = (plot.depenses || []).map(d => [
-                new Date(d.date).toLocaleDateString('fr-FR'),
-                d.motif,
-                d.montant.toLocaleString('fr-FR') + " FCFA"
-            ]);
-            
-            const totalDep = (plot.depenses || []).reduce((s,d) => s + d.montant, 0);
+ const depensesData = (plot.depenses || []).map(d => [
+ new Date(d.date).toLocaleDateString('fr-FR'),
+ d.motif,
+ d.montant.toLocaleString('fr-FR') +"FCFA"
+ ]);
+ 
+ const totalDep = (plot.depenses || []).reduce((s,d) => s + d.montant, 0);
 
-            if(doc.autoTable) {
-                doc.autoTable({
-                    startY: 110,
-                    head: [['Date', 'Motif / Catégorie', 'Montant']],
-                    body: depensesData,
-                    foot: [['', 'TOTAL DES DÉPENSES', totalDep.toLocaleString('fr-FR') + ' FCFA']],
-                    theme: 'striped',
-                    headStyles: { fillColor: [22, 163, 74] },
-                    footStyles: { fillColor: [200, 200, 200], textColor: [0,0,0], fontStyle: 'bold' }
-                });
-            } else {
-                doc.text("Tableau des dépenses indisponible", 14, 120);
-            }
+ if(doc.autoTable) {
+ doc.autoTable({
+ startY: 110,
+ head: [['Date', 'Motif / Catégorie', 'Montant']],
+ body: depensesData,
+ foot: [['', 'TOTAL DES DÉPENSES', totalDep.toLocaleString('fr-FR') + ' FCFA']],
+ theme: 'striped',
+ headStyles: { fillColor: [22, 163, 74] },
+ footStyles: { fillColor: [200, 200, 200], textColor: [0,0,0], fontStyle: 'bold' }
+ });
+ } else {
+ doc.text("Tableau des dépenses indisponible", 14, 120);
+ }
 
-            // Summary
-            const finalY = doc.lastAutoTable ? doc.lastAutoTable.finalY + 20 : 150;
-            doc.setFontSize(16);
-            doc.text("Bilan Financier", 14, finalY);
-            
-            doc.setFontSize(12);
-            doc.text(`Revenu total de la vente : ${(plot.revenuFinal || 0).toLocaleString('fr-FR')} FCFA`, 14, finalY + 10);
-            doc.text(`Total des dépenses : ${totalDep.toLocaleString('fr-FR')} FCFA`, 14, finalY + 18);
-            
-            const benef = (plot.revenuFinal || 0) - totalDep;
-            doc.setFontSize(14);
-            doc.setFont("helvetica", "bold");
-            if (benef >= 0) {
-                doc.setTextColor(22, 163, 74);
-                doc.text(`BÉNÉFICE NET : ${benef.toLocaleString('fr-FR')} FCFA`, 14, finalY + 30);
-            } else {
-                doc.setTextColor(220, 38, 38);
-                doc.text(`PERTE NETTE : ${benef.toLocaleString('fr-FR')} FCFA`, 14, finalY + 30);
-            }
+ // Summary
+ const finalY = doc.lastAutoTable ? doc.lastAutoTable.finalY + 20 : 150;
+ doc.setFontSize(16);
+ doc.text("Bilan Financier", 14, finalY);
+ 
+ doc.setFontSize(12);
+ doc.text(`Revenu total de la vente : ${(plot.revenuFinal || 0).toLocaleString('fr-FR')} FCFA`, 14, finalY + 10);
+ doc.text(`Total des dépenses : ${totalDep.toLocaleString('fr-FR')} FCFA`, 14, finalY + 18);
+ 
+ const benef = (plot.revenuFinal || 0) - totalDep;
+ doc.setFontSize(14);
+ doc.setFont("helvetica","bold");
+ if (benef >= 0) {
+ doc.setTextColor(22, 163, 74);
+ doc.text(`BÉNÉFICE NET : ${benef.toLocaleString('fr-FR')} FCFA`, 14, finalY + 30);
+ } else {
+ doc.setTextColor(220, 38, 38);
+ doc.text(`PERTE NETTE : ${benef.toLocaleString('fr-FR')} FCFA`, 14, finalY + 30);
+ }
 
-            doc.save(`Bilan_${cData.nom.replace(/\s+/g, '_')}.pdf`);
-        };
+ doc.save(`Bilan_${cData.nom.replace(/\s+/g, '_')}.pdf`);
+ };
 
-    });
-  </script>
-  <script src="app.js"></script>
+ });
+ </script>
+ <script src="app.js"></script>
 
-  <!-- MODAL DÉPENSE -->
-  <div id="modalDepense" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[100] p-4">
-    <div class="bg-white dark:bg-cardDark p-6 rounded-2xl border dark:border-gray-700 max-w-sm w-full shadow-2xl">
-      <h3 class="font-bold text-xl text-green-800 mb-4 border-b pb-2"><i class="fas fa-coins"></i> Nouvelle Dépense</h3>
-      <form id="formDepense">
-        <input type="hidden" id="depensePlotIndex">
-        <div class="mb-3">
-            <label class="block text-gray-700 dark:text-gray-200 text-sm font-bold mb-2">Motif</label>
-            <input type="text" id="depenseMotif" required class="w-full border border-gray-300 p-2 rounded" placeholder="Ex: Engrais NPK">
-        </div>
-        <div class="mb-4">
-            <label class="block text-gray-700 dark:text-gray-200 text-sm font-bold mb-2">Montant (FCFA)</label>
-            <input type="number" id="depenseMontant" required class="w-full border border-gray-300 p-2 rounded" placeholder="Ex: 15000">
-        </div>
-        <div class="flex gap-2">
-            <button type="button" onclick="document.getElementById('modalDepense').classList.add('hidden')" class="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-800 dark:text-gray-100 font-bold py-2 px-4 rounded">Annuler</button>
-            <button type="submit" class="flex-1 bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Ajouter</button>
-        </div>
-      </form>
-    </div>
-  </div>
+ <!-- MODAL DÉPENSE -->
+ <div id="modalDepense"class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[100] p-4">
+ <div class="bg-white p-6 rounded-2xl border max-w-sm w-full shadow-2xl">
+ <h3 class="font-bold text-xl text-green-800 mb-4 border-b pb-2"><i class="fas fa-coins"></i> Nouvelle Dépense</h3>
+ <form id="formDepense">
+ <input type="hidden"id="depensePlotIndex">
+ <div class="mb-3">
+ <label class="block text-gray-700 text-sm font-bold mb-2">Motif</label>
+ <input type="text"id="depenseMotif"required class="w-full border border-gray-300 p-2 rounded"placeholder="Ex: Engrais NPK">
+ </div>
+ <div class="mb-4">
+ <label class="block text-gray-700 text-sm font-bold mb-2">Montant (FCFA)</label>
+ <input type="number"id="depenseMontant"required class="w-full border border-gray-300 p-2 rounded"placeholder="Ex: 15000">
+ </div>
+ <div class="flex gap-2">
+ <button type="button"onclick="document.getElementById('modalDepense').classList.add('hidden')"class="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded">Annuler</button>
+ <button type="submit"class="flex-1 bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Ajouter</button>
+ </div>
+ </form>
+ </div>
+ </div>
 
-  <!-- MODAL BILAN -->
-  <div id="modalBilan" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[100] p-4">
-    <div class="bg-white dark:bg-cardDark p-6 rounded-2xl border dark:border-gray-700 max-w-sm w-full shadow-2xl">
-      <h3 class="font-bold text-xl text-green-800 mb-4 border-b pb-2"><i class="fas fa-hand-holding-usd"></i> Bilan de Récolte</h3>
-      <form id="formBilan">
-        <input type="hidden" id="bilanPlotIndex">
-        <div class="mb-4">
-            <label class="block text-gray-700 dark:text-gray-200 text-sm font-bold mb-2">Revenu total de la vente (FCFA)</label>
-            <input type="number" id="bilanRevenu" required class="w-full border border-gray-300 p-2 rounded" placeholder="Ex: 350000">
-        </div>
-        <div class="flex gap-2">
-            <button type="button" onclick="document.getElementById('modalBilan').classList.add('hidden')" class="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-800 dark:text-gray-100 font-bold py-2 px-4 rounded">Annuler</button>
-            <button type="submit" class="flex-1 bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Clôturer</button>
-        </div>
-      </form>
-    </div>
-  </div>
+ <!-- MODAL BILAN -->
+ <div id="modalBilan"class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[100] p-4">
+ <div class="bg-white p-6 rounded-2xl border max-w-sm w-full shadow-2xl">
+ <h3 class="font-bold text-xl text-green-800 mb-4 border-b pb-2"><i class="fas fa-hand-holding-usd"></i> Bilan de Récolte</h3>
+ <form id="formBilan">
+ <input type="hidden"id="bilanPlotIndex">
+ <div class="mb-4">
+ <label class="block text-gray-700 text-sm font-bold mb-2">Revenu total de la vente (FCFA)</label>
+ <input type="number"id="bilanRevenu"required class="w-full border border-gray-300 p-2 rounded"placeholder="Ex: 350000">
+ </div>
+ <div class="flex gap-2">
+ <button type="button"onclick="document.getElementById('modalBilan').classList.add('hidden')"class="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded">Annuler</button>
+ <button type="submit"class="flex-1 bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Clôturer</button>
+ </div>
+ </form>
+ </div>
+ </div>
 
 
-  <!-- MODAL JOURNAL -->
-  <div id="modalJournal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[100] p-4">
-    <div class="bg-white dark:bg-cardDark p-6 rounded-2xl border dark:border-gray-700 max-w-md w-full shadow-2xl">
-      <h3 class="font-bold text-xl text-blue-800 mb-4 border-b pb-2"><i class="fas fa-book"></i> Journal de Bord</h3>
-      <div id="journalList" class="mb-4 max-h-40 overflow-y-auto space-y-2"></div>
-      <form id="formJournal">
-        <input type="hidden" id="journalPlotIndex">
-        <div class="mb-3">
-            <label class="block text-gray-700 dark:text-gray-200 text-sm font-bold mb-1">Ajouter une note</label>
-            <textarea id="journalNote" required class="w-full border border-gray-300 p-2 rounded" rows="2" placeholder="Ex: Feuilles un peu jaunes, manque d'eau suspecté..."></textarea>
-        </div>
-        <div class="flex gap-2">
-            <button type="button" onclick="document.getElementById('modalJournal').classList.add('hidden')" class="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-800 dark:text-gray-100 font-bold py-2 px-4 rounded">Fermer</button>
-            <button type="submit" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Enregistrer</button>
-        </div>
-      </form>
-    </div>
-  </div>
+ <!-- MODAL JOURNAL -->
+ <div id="modalJournal"class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[100] p-4">
+ <div class="bg-white p-6 rounded-2xl border max-w-md w-full shadow-2xl">
+ <h3 class="font-bold text-xl text-blue-800 mb-4 border-b pb-2"><i class="fas fa-book"></i> Journal de Bord</h3>
+ <div id="journalList"class="mb-4 max-h-40 overflow-y-auto space-y-2"></div>
+ <form id="formJournal">
+ <input type="hidden"id="journalPlotIndex">
+ <div class="mb-3">
+ <label class="block text-gray-700 text-sm font-bold mb-1">Ajouter une note</label>
+ <textarea id="journalNote"required class="w-full border border-gray-300 p-2 rounded"rows="2"placeholder="Ex: Feuilles un peu jaunes, manque d'eau suspecté..."></textarea>
+ </div>
+ <div class="flex gap-2">
+ <button type="button"onclick="document.getElementById('modalJournal').classList.add('hidden')"class="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded">Fermer</button>
+ <button type="submit"class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Enregistrer</button>
+ </div>
+ </form>
+ </div>
+ </div>
 
 </body>
 </html>
