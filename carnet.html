@@ -253,11 +253,11 @@
                         gpsStatus.className = "text-xs text-green-500 mt-1 font-bold";
                     },
                     (err) => {
-                        gpsStatus.innerText = "Erreur: Activez la localisation.";
+                        gpsStatus.innerText = "Erreur: Activez le GPS et autorisez le navigateur.";
                         gpsStatus.className = "text-xs text-red-500 mt-1";
                         console.error(err);
                     },
-                    { enableHighAccuracy: true, timeout: 10000 }
+                    { enableHighAccuracy: false, timeout: 20000, maximumAge: 0 }
                 );
             });
         }
